@@ -91,7 +91,6 @@ func main() {
 	path := "./short_stations/"
 	files, err := ioutil.ReadDir(path)
 	check(err)
-	var past_track Track
 
 	outfile, err := os.Create("./output.csv")
 	check(err)
@@ -100,6 +99,7 @@ func main() {
 	csv_writer := csv.NewWriter(outfile)
 
 	stations := make(map[string][]Track)
+	station_last_track := make(map[string]Track)
 
 	for _, file := range files {
 		file_name := file.Name()
@@ -111,17 +111,31 @@ func main() {
 		}
 		station_name := tracks[0].Station
 		if station, ok := stations[station_name]; ok {
+			//			fmt.Println(station_last_track[station_name])
 			for _, track := range tracks {
-				if track != past_track {
+				if track.Title != station_last_track[station_name].Title {
+					fmt.Println(track)
 					station = append(station, track)
+					stations[station_name] = station
+				} else {
+					station_last_track[station_name] = tracks[0]
+					break
 				}
+
 			}
-			past_track = tracks[0]
-			fmt.Println(past_track)
+
 		} else {
 			stations[station_name] = tracks
 		}
+		station_last_track[station_name] = tracks[0]
 
 	}
 	csv_writer.Flush()
+	//	fmt.Println(stations)
+	/*
+		tracks := stations["KDWB"]
+		for _, track := range tracks {
+			fmt.Println(track)
+		}
+	*/
 }
