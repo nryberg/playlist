@@ -89,14 +89,9 @@ func write_tracks(tracks []Track, csv_writer *csv.Writer) error {
 
 func main() {
 	path := "./short_stations/"
+	path = "./stations/"
 	files, err := ioutil.ReadDir(path)
 	check(err)
-
-	outfile, err := os.Create("./output.csv")
-	check(err)
-
-	defer outfile.Close()
-	csv_writer := csv.NewWriter(outfile)
 
 	stations := make(map[string][]Track)
 	station_last_track := make(map[string]Track)
@@ -105,33 +100,54 @@ func main() {
 		file_name := file.Name()
 
 		tracks := process_station(file_name, path)
+		if len(tracks) > 0 {
+			station_name := file_name[22:strings.Index(file_name, ".")]
+			if station, ok := stations[station_name]; ok {
+				last_track := station_last_track[station_name]
+
+				for _, track := range tracks {
+					if track.Title != last_track.Title {
+						station = append(station, track)
+						stations[station_name] = station
+					} else {
+						break
+					}
+
+				}
+
+			} else {
+				station := append(station, tracks[0])
+				stations[station_name] = station
+			}
+			station_last_track[station_name] = tracks[0]
+		}
+
+	}
+	/*
 		if file.Name()[22:26] == "KDWB" {
 			err = write_tracks(tracks, csv_writer)
 			check(err)
 		}
-		station_name := tracks[0].Station
-		if station, ok := stations[station_name]; ok {
-			//			fmt.Println(station_last_track[station_name])
-			for _, track := range tracks {
-				if track.Title != station_last_track[station_name].Title {
-					fmt.Println(track)
-					station = append(station, track)
-					stations[station_name] = station
-				} else {
-					station_last_track[station_name] = tracks[0]
-					break
-				}
+	*/
 
-			}
+	//	fmt.Println(stations)
+	keys := make([]string, 0, len(stations))
+	for k := range stations {
+		keys = append(keys, k)
+	}
+	outfile, err := os.Create("./output.csv")
+	check(err)
 
-		} else {
-			stations[station_name] = tracks
-		}
-		station_last_track[station_name] = tracks[0]
+	defer outfile.Close()
+	csv_writer := csv.NewWriter(outfile)
 
+	for _, key := range keys {
+		fmt.Println(key, len(stations[key]))
+		tracks := stations[key]
+		err = write_tracks(tracks, csv_writer)
+		check(err)
 	}
 	csv_writer.Flush()
-	//	fmt.Println(stations)
 	/*
 		tracks := stations["KDWB"]
 		for _, track := range tracks {
