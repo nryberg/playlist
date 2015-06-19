@@ -102,8 +102,8 @@ func main() {
 
 	c := session.DB("music").C("tracks")
 
-	//path = "./stations/"
 	path := "./short_stations/"
+	path = "./stations/"
 	files, err := ioutil.ReadDir(path)
 	check(err)
 
