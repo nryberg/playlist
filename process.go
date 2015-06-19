@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"github.com/kennygrant/sanitize"
+	"gopkg.in/mgo.v2"
 	"io/ioutil"
 	"os"
 	"regexp"
@@ -57,7 +58,7 @@ func process_station(file string, path string) []Track {
 				artist = sanitize.HTML(text)
 				artist = strings.Trim(artist, " ")
 				artist = strings.TrimLeft(artist, "by")
-				track.Artist = artist
+				track.Artist = strings.TrimLeft(artist, " ")
 				track.Title = title
 				track.TimeStamp = timestamp
 				track.Station = station_name
@@ -88,8 +89,21 @@ func write_tracks(tracks []Track, csv_writer *csv.Writer) error {
 }
 
 func main() {
+	// Hook up to Mongo for export
+
+	session, err := mgo.Dial("localhost")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	// Optional. Switch the session to a monotonic behavior.
+	session.SetMode(mgo.Monotonic, true)
+
+	c := session.DB("music").C("tracks")
+
+	//path = "./stations/"
 	path := "./short_stations/"
-	path = "./stations/"
 	files, err := ioutil.ReadDir(path)
 	check(err)
 
@@ -139,15 +153,23 @@ func main() {
 	check(err)
 
 	defer outfile.Close()
-	csv_writer := csv.NewWriter(outfile)
+	// csv_writer := csv.NewWriter(outfile)
+
+	// Drop the test collection
+	c.DropCollection()
 
 	for _, key := range keys {
 		fmt.Println(key, len(stations[key]))
 		tracks := stations[key]
-		err = write_tracks(tracks, csv_writer)
-		check(err)
+		// err = write_tracks(tracks, csv_writer)
+		// check(err)
+
+		for _, track := range tracks {
+			err = c.Insert(track)
+			check(err)
+		}
 	}
-	csv_writer.Flush()
+	// csv_writer.Flush()
 	/*
 		tracks := stations["KDWB"]
 		for _, track := range tracks {
