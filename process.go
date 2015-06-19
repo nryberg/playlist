@@ -90,8 +90,18 @@ func write_tracks(tracks []Track, csv_writer *csv.Writer) error {
 
 func main() {
 	// Hook up to Mongo for export
+	user := os.Getenv("MONGUSER")
+	pwd := os.Getenv("MONGPWD")
 
+	fmt.Println(user)
+	dialtone := "mongodb://" + user + ":" + pwd + "@linus.mongohq.com:10031/shorten"
+
+	// test only
 	session, err := mgo.Dial("localhost")
+
+	// prod only
+	session, err = mgo.Dial(dialtone)
+
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +110,7 @@ func main() {
 	// Optional. Switch the session to a monotonic behavior.
 	session.SetMode(mgo.Monotonic, true)
 
-	c := session.DB("music").C("tracks")
+	c := session.DB("shorten").C("tracks")
 
 	path := "./short_stations/"
 	path = "./stations/"
