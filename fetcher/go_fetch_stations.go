@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	filename := "./stations.txt"
-	output_file_path := "./station_data/"
+	filename := "/root/Develop/playlist/fetcher/stations.txt"
+	output_file_path := "/root/Develop/playlist/fetcher/station_data/"
 	stations, err := os.Open(filename)
 
 	time_now := time.Now().Format(time.RFC3339)
