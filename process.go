@@ -89,6 +89,9 @@ func write_tracks(tracks []Track, csv_writer *csv.Writer) error {
 }
 
 func main() {
+	// path := "./short_stations/"
+	path := os.Args[1] //  "./stations/"
+	collection := os.Args[2]
 	// Hook up to Mongo for export
 	user := os.Getenv("MONGUSER")
 	pwd := os.Getenv("MONGPWD")
@@ -110,10 +113,8 @@ func main() {
 	// Optional. Switch the session to a monotonic behavior.
 	session.SetMode(mgo.Monotonic, true)
 
-	c := session.DB("shorten").C("tracks")
+	c := session.DB("shorten").C(collection)
 
-	path := "./short_stations/"
-	path = "./stations/"
 	files, err := ioutil.ReadDir(path)
 	check(err)
 
@@ -159,27 +160,40 @@ func main() {
 	for k := range stations {
 		keys = append(keys, k)
 	}
-	outfile, err := os.Create("./output.csv")
+	outfile, err := os.Create("./" + collection + ".csv")
 	check(err)
 
 	defer outfile.Close()
-	// csv_writer := csv.NewWriter(outfile)
+	csv_writer := csv.NewWriter(outfile)
 
 	// Drop the test collection
 	c.DropCollection()
 
+	// Write out CSV
+	// Header info first
+	record := make([]string, 4)
+	record[0] = "Station"
+	record[1] = "TimeStamp"
+	record[2] = "Artist"
+	record[3] = "Title"
+
+	err = csv_writer.Write(record)
+
+	check(err)
+
 	for _, key := range keys {
 		fmt.Println(key, len(stations[key]))
 		tracks := stations[key]
-		// err = write_tracks(tracks, csv_writer)
-		// check(err)
+		check(err)
+		err = write_tracks(tracks, csv_writer)
+		check(err)
 
 		for _, track := range tracks {
 			err = c.Insert(track)
 			check(err)
 		}
 	}
-	// csv_writer.Flush()
+	csv_writer.Flush()
 	/*
 		tracks := stations["KDWB"]
 		for _, track := range tracks {
