@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -33,6 +34,7 @@ func process_station(file string, path string) []Track {
 	station_name := file[22:strings.Index(file, ".")]
 	check(err)
 
+	fmt.Println(station_name)
 	defer station.Close()
 	var begin_exp = regexp.MustCompile(`<h4`)
 	var end_exp = regexp.MustCompile(`<h5`)
@@ -92,39 +94,52 @@ func main() {
 	// path := "./short_stations/"
 	path := os.Args[1] //  "./stations/"
 	collection := os.Args[2]
-	// Hook up to Mongo for export
-	user := os.Getenv("MONGUSER")
-	pwd := os.Getenv("MONGPWD")
+	mongo_server := os.Args[3]
+	mongo_database := os.Args[4]
 
-	fmt.Println(user)
-	dialtone := "mongodb://" + user + ":" + pwd + "@linus.mongohq.com:10031/shorten"
+	dialtone := ""
+	if strings.HasPrefix(mongo_server, "localhost") {
+		dialtone = mongo_server
+	} else {
+		user := os.Getenv("MONGUSER")
+		pwd := os.Getenv("MONGPWD")
+		dialtone = "mongodb://" + user + ":" + pwd + "@" + mongo_server // linus.mongohq.com:10031/shorten"
+	}
 
-	// test only
-	session, err := mgo.Dial("localhost")
+	fmt.Println("Path: " + path)
+	fmt.Println("Server: " + dialtone)
+	fmt.Println("Database: " + mongo_database)
+	fmt.Println("Collection: " + collection)
 
-	// prod only
-	session, err = mgo.Dial(dialtone)
-
+	session, err := mgo.Dial(dialtone)
 	if err != nil {
 		panic(err)
 	}
 	defer session.Close()
 
 	// Optional. Switch the session to a monotonic behavior.
-	session.SetMode(mgo.Monotonic, true)
+	// 	session.SetMode(mgo.Monotonic, true)
 
-	c := session.DB("shorten").C(collection)
+	c := session.DB(mongo_database).C(collection)
+
+	// If localhost, drop the collection
+	if strings.HasPrefix(mongo_server, "localhost") {
+		// Drop the test collection
+		c.DropCollection()
+	}
 
 	files, err := ioutil.ReadDir(path)
 	check(err)
+
+	fmt.Println("Count Files: " + strconv.Itoa(len(files)))
 
 	stations := make(map[string][]Track)
 	station_last_track := make(map[string]Track)
 
 	for _, file := range files {
 		file_name := file.Name()
-
 		tracks := process_station(file_name, path)
+		fmt.Println("Count tracks: " + strconv.Itoa(len(tracks)))
 		if len(tracks) > 0 {
 			station_name := file_name[22:strings.Index(file_name, ".")]
 			if station, ok := stations[station_name]; ok {
@@ -148,14 +163,7 @@ func main() {
 		}
 
 	}
-	/*
-		if file.Name()[22:26] == "KDWB" {
-			err = write_tracks(tracks, csv_writer)
-			check(err)
-		}
-	*/
-
-	//	fmt.Println(stations)
+	fmt.Println(stations)
 	keys := make([]string, 0, len(stations))
 	for k := range stations {
 		keys = append(keys, k)
@@ -165,10 +173,6 @@ func main() {
 
 	defer outfile.Close()
 	csv_writer := csv.NewWriter(outfile)
-
-	// Drop the test collection
-	c.DropCollection()
-
 	// Write out CSV
 	// Header info first
 	record := make([]string, 4)
@@ -182,7 +186,6 @@ func main() {
 	check(err)
 
 	for _, key := range keys {
-		fmt.Println(key, len(stations[key]))
 		tracks := stations[key]
 		check(err)
 		err = write_tracks(tracks, csv_writer)
@@ -194,10 +197,4 @@ func main() {
 		}
 	}
 	csv_writer.Flush()
-	/*
-		tracks := stations["KDWB"]
-		for _, track := range tracks {
-			fmt.Println(track)
-		}
-	*/
 }
