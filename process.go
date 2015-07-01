@@ -131,6 +131,8 @@ func main() {
 	stations := make(map[string][]Track)
 	station_last_track := make(map[string]Track)
 
+	// Process the files
+
 	for _, file := range files {
 		file_name := file.Name()
 		tracks := process_station(file_name, path)
@@ -146,9 +148,7 @@ func main() {
 					} else {
 						break
 					}
-
 				}
-
 			} else {
 				station := append(station, tracks[0])
 				stations[station_name] = station
@@ -161,6 +161,8 @@ func main() {
 	for k := range stations {
 		keys = append(keys, k)
 	}
+
+	// Process out the CSV file
 	outfile, err := os.Create("./" + collection + ".csv")
 	check(err)
 
@@ -183,7 +185,7 @@ func main() {
 		check(err)
 		err = write_tracks(tracks, csv_writer)
 		check(err)
-
+		// write out the Mongo Data
 		for _, track := range tracks {
 			err = c.Insert(track)
 			check(err)
