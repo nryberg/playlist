@@ -28,13 +28,13 @@ func check(e error) {
 }
 
 func process_station(file string, path string) []Track {
-	station, err := os.Open(path + file)
+	station, err := os.Open(path + "/" + file)
+
 	timestamp_string := file[0:20]
 	timestamp, err := time.Parse(time.RFC3339, timestamp_string)
 	station_name := file[22:strings.Index(file, ".")]
 	check(err)
 
-	fmt.Println(station_name)
 	defer station.Close()
 	var begin_exp = regexp.MustCompile(`<h4`)
 	var end_exp = regexp.MustCompile(`<h5`)
@@ -106,11 +106,6 @@ func main() {
 		dialtone = "mongodb://" + user + ":" + pwd + "@" + mongo_server // linus.mongohq.com:10031/shorten"
 	}
 
-	fmt.Println("Path: " + path)
-	fmt.Println("Server: " + dialtone)
-	fmt.Println("Database: " + mongo_database)
-	fmt.Println("Collection: " + collection)
-
 	session, err := mgo.Dial(dialtone)
 	if err != nil {
 		panic(err)
@@ -139,7 +134,6 @@ func main() {
 	for _, file := range files {
 		file_name := file.Name()
 		tracks := process_station(file_name, path)
-		fmt.Println("Count tracks: " + strconv.Itoa(len(tracks)))
 		if len(tracks) > 0 {
 			station_name := file_name[22:strings.Index(file_name, ".")]
 			if station, ok := stations[station_name]; ok {
@@ -163,7 +157,6 @@ func main() {
 		}
 
 	}
-	fmt.Println(stations)
 	keys := make([]string, 0, len(stations))
 	for k := range stations {
 		keys = append(keys, k)
