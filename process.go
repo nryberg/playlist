@@ -34,9 +34,6 @@ func process_station(file string, path string) []Track {
 	timestamp, err := time.Parse(time.RFC3339, timestamp_string)
 	station_name := file[(index_dashes + 2):strings.Index(file, ".")]
 
-	fmt.Println(timestamp)
-	fmt.Println(station_name)
-
 	check(err)
 
 	defer station.Close()
