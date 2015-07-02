@@ -3,12 +3,12 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <!-- BEGIN::HTML_HEAD -->
 <head>
-	<meta charset="utf-8" /><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"UQEHVlRRGwYDXFJVBQI="};window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function r(n){if(!e[n]){var o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var o=t[n][1][e];return r(o?o:e)},o,o.exports)}return e[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({QJf3ax:[function(t,e){function n(t){function e(e,n,a){t&&t(e,n,a),a||(a={});for(var c=s(e),f=c.length,u=i(a,o,r),d=0;f>d;d++)c[d].apply(u,n);return u}function a(t,e){f[t]=s(t).concat(e)}function s(t){return f[t]||[]}function c(){return n(e)}var f={};return{on:a,emit:e,create:c,listeners:s,_events:f}}function r(){return{}}var o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],3:[function(t){function e(t){try{i.console&&console.log(t)}catch(e){}}var n,r=t("ee"),o=t(1),i={};try{n=localStorage.getItem("__nr_flags").split(","),console&&"function"==typeof console.log&&(i.console=!0,-1!==n.indexOf("dev")&&(i.dev=!0),-1!==n.indexOf("nr_dev")&&(i.nrDev=!0))}catch(a){}i.nrDev&&r.on("internal-error",function(t){e(t.stack)}),i.dev&&r.on("fn-err",function(t,n,r){e(r.stack)}),i.dev&&(e("NR AGENT IN DEVELOPMENT MODE"),e("flags: "+o(i,function(t){return t}).join(", ")))},{1:23,ee:"QJf3ax"}],4:[function(t){function e(t,e,n,i,s){try{c?c-=1:r("err",[s||new UncaughtException(t,e,n)])}catch(f){try{r("ierr",[f,(new Date).getTime(),!0])}catch(u){}}return"function"==typeof a?a.apply(this,o(arguments)):!1}function UncaughtException(t,e,n){this.message=t||"Uncaught error with no additional information",this.sourceURL=e,this.line=n}function n(t){r("err",[t,(new Date).getTime()])}var r=t("handle"),o=t(6),i=t("ee"),a=window.onerror,s=!1,c=0;t("loader").features.err=!0,t(4),window.onerror=e;try{throw new Error}catch(f){"stack"in f&&(t(1),t(5),"addEventListener"in window&&t(2),window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)&&t(3),s=!0)}i.on("fn-start",function(){s&&(c+=1)}),i.on("fn-err",function(t,e,r){s&&(this.thrown=!0,n(r))}),i.on("fn-end",function(){s&&!this.thrown&&c>0&&(c-=1)}),i.on("internal-error",function(t){r("ierr",[t,(new Date).getTime(),!0])})},{1:10,2:7,3:11,4:3,5:9,6:24,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],5:[function(t){t("loader").features.ins=!0},{loader:"G9z0Bl"}],6:[function(t){function e(){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var n=t("ee"),r=t("handle"),o=t(1);t("loader").features.stn=!0,t(2),n.on("fn-start",function(t){var e=t[0];e instanceof Event&&(this.bstStart=Date.now())}),n.on("fn-end",function(t,e){var n=t[0];n instanceof Event&&r("bst",[n,e,this.bstStart,Date.now()])}),o.on("fn-start",function(t,e,n){this.bstStart=Date.now(),this.bstType=n}),o.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),this.bstType])}),n.on("pushState-start",function(){this.time=Date.now(),this.startPath=location.pathname+location.hash}),n.on("pushState-end",function(){r("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),"addEventListener"in window.performance&&(window.performance.addEventListener("webkitresourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.webkitClearResourceTimings()},!1),window.performance.addEventListener("resourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.clearResourceTimings()},!1)),document.addEventListener("scroll",e,!1),document.addEventListener("keypress",e,!1),document.addEventListener("click",e,!1)}},{1:10,2:8,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],7:[function(t,e){function n(t){i.inPlace(t,["addEventListener","removeEventListener"],"-",r)}function r(t){return t[1]}var o=(t(1),t("ee").create()),i=t(2)(o),a=t("gos");if(e.exports=o,n(window),"getPrototypeOf"in Object){for(var s=document;s&&!s.hasOwnProperty("addEventListener");)s=Object.getPrototypeOf(s);s&&n(s);for(var c=XMLHttpRequest.prototype;c&&!c.hasOwnProperty("addEventListener");)c=Object.getPrototypeOf(c);c&&n(c)}else XMLHttpRequest.prototype.hasOwnProperty("addEventListener")&&n(XMLHttpRequest.prototype);o.on("addEventListener-start",function(t){if(t[1]){var e=t[1];"function"==typeof e?this.wrapped=t[1]=a(e,"nr@wrapped",function(){return i(e,"fn-",null,e.name||"anonymous")}):"function"==typeof e.handleEvent&&i.inPlace(e,["handleEvent"],"fn-")}}),o.on("removeEventListener-start",function(t){var e=this.wrapped;e&&(t[1]=e)})},{1:24,2:25,ee:"QJf3ax",gos:"7eSDFh"}],8:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window.history,["pushState"],"-")},{1:25,2:24,ee:"QJf3ax"}],9:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window,["requestAnimationFrame","mozRequestAnimationFrame","webkitRequestAnimationFrame","msRequestAnimationFrame"],"raf-"),n.on("raf-start",function(t){t[0]=r(t[0],"fn-")})},{1:25,2:24,ee:"QJf3ax"}],10:[function(t,e){function n(t,e,n){t[0]=o(t[0],"fn-",null,n)}var r=(t(2),t("ee").create()),o=t(1)(r);e.exports=r,o.inPlace(window,["setTimeout","setInterval","setImmediate"],"setTimer-"),r.on("setTimer-start",n)},{1:25,2:24,ee:"QJf3ax"}],11:[function(t,e){function n(){f.inPlace(this,p,"fn-")}function r(t,e){f.inPlace(e,["onreadystatechange"],"fn-")}function o(t,e){return e}function i(t,e){for(var n in t)e[n]=t[n];return e}var a=t("ee").create(),s=t(1),c=t(2),f=c(a),u=c(s),d=window.XMLHttpRequest,p=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"];e.exports=a,window.XMLHttpRequest=function(t){var e=new d(t);try{a.emit("new-xhr",[],e),u.inPlace(e,["addEventListener","removeEventListener"],"-",o),e.addEventListener("readystatechange",n,!1)}catch(r){try{a.emit("internal-error",[r])}catch(i){}}return e},i(d,XMLHttpRequest),XMLHttpRequest.prototype=d.prototype,f.inPlace(XMLHttpRequest.prototype,["open","send"],"-xhr-",o),a.on("send-xhr-start",r),a.on("open-xhr-start",r)},{1:7,2:25,ee:"QJf3ax"}],12:[function(t){function e(t){var e=this.params,r=this.metrics;if(!this.ended){this.ended=!0;for(var i=0;c>i;i++)t.removeEventListener(s[i],this.listener,!1);if(!e.aborted){if(r.duration=(new Date).getTime()-this.startTime,4===t.readyState){e.status=t.status;var a=t.responseType,f="arraybuffer"===a||"blob"===a||"json"===a?t.response:t.responseText,u=n(f);if(u&&(r.rxSize=u),this.sameOrigin){var d=t.getResponseHeader("X-NewRelic-App-Data");d&&(e.cat=d.split(", ").pop())}}else e.status=0;r.cbTime=this.cbTime,o("xhr",[e,r,this.startTime])}}}function n(t){if("string"==typeof t&&t.length)return t.length;if("object"!=typeof t)return void 0;if("undefined"!=typeof ArrayBuffer&&t instanceof ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof Blob&&t instanceof Blob&&t.size)return t.size;if("undefined"!=typeof FormData&&t instanceof FormData)return void 0;try{return JSON.stringify(t).length}catch(e){return void 0}}function r(t,e){var n=i(e),r=t.params;r.host=n.hostname+":"+n.port,r.pathname=n.pathname,t.sameOrigin=n.sameOrigin}if(window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)){t("loader").features.xhr=!0;var o=t("handle"),i=t(2),a=t("ee"),s=["load","error","abort","timeout"],c=s.length,f=t(1);t(4),t(3),a.on("new-xhr",function(){this.totalCbs=0,this.called=0,this.cbTime=0,this.end=e,this.ended=!1,this.xhrGuids={}}),a.on("open-xhr-start",function(t){this.params={method:t[0]},r(this,t[1]),this.metrics={}}),a.on("open-xhr-end",function(t,e){"loader_config"in NREUM&&"xpid"in NREUM.loader_config&&this.sameOrigin&&e.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid)}),a.on("send-xhr-start",function(t,e){var r=this.metrics,o=t[0],i=this;if(r&&o){var f=n(o);f&&(r.txSize=f)}this.startTime=(new Date).getTime(),this.listener=function(t){try{"abort"===t.type&&(i.params.aborted=!0),("load"!==t.type||i.called===i.totalCbs&&(i.onloadCalled||"function"!=typeof e.onload))&&i.end(e)}catch(n){try{a.emit("internal-error",[n])}catch(r){}}};for(var u=0;c>u;u++)e.addEventListener(s[u],this.listener,!1)}),a.on("xhr-cb-time",function(t,e,n){this.cbTime+=t,e?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof n.onload||this.end(n)}),a.on("xhr-load-added",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&!this.xhrGuids[n]&&(this.xhrGuids[n]=!0,this.totalCbs+=1)}),a.on("xhr-load-removed",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&this.xhrGuids[n]&&(delete this.xhrGuids[n],this.totalCbs-=1)}),a.on("addEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-added",[t[1],t[2]],e)}),a.on("removeEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-removed",[t[1],t[2]],e)}),a.on("fn-start",function(t,e,n){e instanceof XMLHttpRequest&&("onload"===n&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=(new Date).getTime()))}),a.on("fn-end",function(t,e){this.xhrCbStart&&a.emit("xhr-cb-time",[(new Date).getTime()-this.xhrCbStart,this.onload,e],e)})}},{1:"XL7HBI",2:13,3:11,4:7,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],13:[function(t,e){e.exports=function(t){var e=document.createElement("a"),n=window.location,r={};e.href=t,r.port=e.port;var o=e.href.split("://");return!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=e.hostname||n.hostname,r.pathname=e.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname),r.sameOrigin=!e.hostname||e.hostname===document.domain&&e.port===n.port&&e.protocol===n.protocol,r}},{}],14:[function(t,e){function n(t){return function(){r(t,[(new Date).getTime()].concat(i(arguments)))}}var r=t("handle"),o=t(1),i=t(2);"undefined"==typeof window.newrelic&&(newrelic=window.NREUM);var a=["setPageViewName","addPageAction","setCustomAttribute","finished","addToTrace","inlineHit","noticeError"];o(a,function(t,e){window.NREUM[e]=n("api-"+e)}),e.exports=window.NREUM},{1:23,2:24,handle:"D5DuLP"}],"7eSDFh":[function(t,e){function n(t,e,n){if(r.call(t,e))return t[e];var o=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return t[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],D5DuLP:[function(t,e){function n(t,e,n){return r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee=r,r.q=o},{ee:"QJf3ax"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],XL7HBI:[function(t,e){function n(t){var e=typeof t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return r++})}var r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],G9z0Bl:[function(t,e){function n(){var t=l.info=NREUM.info;if(t&&t.licenseKey&&t.applicationID&&f&&f.body){s(h,function(e,n){e in t||(t[e]=n)}),l.proto="https"===p.split(":")[0]||t.sslForHttp?"https://":"http://",a("mark",["onload",i()]);var e=f.createElement("script");e.src=l.proto+t.agent,f.body.appendChild(e)}}function r(){"complete"===f.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),s=t(1),c=(t(2),window),f=c.document,u="addEventListener",d="attachEvent",p=(""+location).split("?")[0],h={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-627.min.js"},l=e.exports={offset:i(),origin:p,features:{}};f[u]?(f[u]("DOMContentLoaded",o,!1),c[u]("load",n,!1)):(f[d]("onreadystatechange",r),c[d]("onload",n)),a("mark",["firstbyte",i()])},{1:23,2:14,handle:"D5DuLP"}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],23:[function(t,e){function n(t,e){var n=[],o="",i=0;for(o in t)r.call(t,o)&&(n[i]=e(o,t[o]),i+=1);return n}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],24:[function(t,e){function n(t,e,n){e||(e=0),"undefined"==typeof n&&(n=t?t.length:0);for(var r=-1,o=n-e||0,i=Array(0>o?0:o);++r<o;)i[r]=t[e+r];return i}e.exports=n},{}],25:[function(t,e){function n(t){return!(t&&"function"==typeof t&&t.apply&&!t[i])}var r=t("ee"),o=t(1),i="nr@wrapper",a=Object.prototype.hasOwnProperty;e.exports=function(t){function e(t,e,r,a){function nrWrapper(){var n,i,s,f;try{i=this,n=o(arguments),s=r&&r(n,i)||{}}catch(d){u([d,"",[n,i,a],s])}c(e+"start",[n,i,a],s);try{return f=t.apply(i,n)}catch(p){throw c(e+"err",[n,i,p],s),p}finally{c(e+"end",[n,i,f],s)}}return n(t)?t:(e||(e=""),nrWrapper[i]=!0,f(t,nrWrapper),nrWrapper)}function s(t,r,o,i){o||(o="");var a,s,c,f="-"===o.charAt(0);for(c=0;c<r.length;c++)s=r[c],a=t[s],n(a)||(t[s]=e(a,f?s+o:o,i,s))}function c(e,n,r){try{t.emit(e,n,r)}catch(o){u([o,e,n,r])}}function f(t,e){if(Object.defineProperty&&Object.keys)try{var n=Object.keys(t);return n.forEach(function(n){Object.defineProperty(e,n,{get:function(){return t[n]},set:function(e){return t[n]=e,e}})}),e}catch(r){u([r])}for(var o in t)a.call(t,o)&&(e[o]=t[o]);return e}function u(e){try{t.emit("internal-error",e)}catch(n){}}return t||(t=r),e.inPlace=s,e.flag=i,e}},{1:24,ee:"QJf3ax"}]},{},["G9z0Bl",4,12,6,5]);</script>
+	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width" />
-        <title>101.3 KDWB - Twin Cities' #1 Hit Music Station!</title>
+    <title>101.3 KDWB - Twin Cities' #1 Hit Music Station!</title>
     <meta name="keywords" content="kdwb, 101.3, dave ryan, kdwb morning show, morning show, twin cities radio, Minneapolis, MN, St. Paul, Twin Cities, Lucas, Big D, Falen, Steve-O, radio, station" />
 	<meta name="description" content="Featuring news on today's hit music, exclusive artist performances, and all the hilarious antics of The Dave Ryan in the Morning Show!" />
-        <!-- Android Install to Home Screen meta -->
+    <!-- Android Install to Home Screen meta -->
     <meta name="mobile-web-app-capable" content="yes">
 	<link rel="shortcut icon" href="/pages/favicon.ico">	
         <link rel="shortcut icon" sizes="144x144" href="/cc-common/mlib/787/2015/02/default/kdwb_social_144_0_1424339459.png">
@@ -40,13 +40,13 @@
     })();
 </script>
 <script type='text/javascript'>
-    googletag.cmd.push(function() {
-        var adSlot1 = googletag.defineSlot('/6663/ccr.minneapolis.mn/kdwb-fm', [320, 50], 'dfp-ad-2006').addService(googletag.pubads());
+    googletag.cmd.push(function() {        
+        var adSlot1 = googletag.defineSlot('/6663/ccr.minneapolis.mn/kdwb-fm',[[320, 50] ], 'dfp-ad-2006').addService(googletag.pubads());
         adSlot1.setTargeting('ccrlocalcontent', ['']);
         adSlot1.setTargeting('ccrpos', ['2006']);
         adSlot1.setTargeting('pos', ['2006']);
-        adSlot1.setTargeting('ccrmarket', ['minneapolis-mn']);
-        adSlot1.setTargeting('market', ['minneapolis-mn']);
+        adSlot1.setTargeting('ccrmarket', ['MINNEAPOLIS-MN']);
+        adSlot1.setTargeting('market', ['MINNEAPOLIS-MN']);
         adSlot1.setTargeting('ccrformat', ['CHRPOP']);
         adSlot1.setTargeting('format', ['CHRPOP']);
        
@@ -62,9 +62,11 @@
         googletag.pubads().setTargeting('hn', window.location.hostname);
         googletag.pubads().setTargeting('env', 'prod');
         googletag.pubads().setTargeting('vers', 'FLINT-MOBILE');
+        googletag.pubads().collapseEmptyDivs(true);
         googletag.enableServices();
     });
 </script>    
+
     
     
 <script>
@@ -162,7 +164,7 @@ color: #000000;
     <nav class="push-menu" id="push-menu">
         <div class="push-menu-swipe">
                         <header class="listen-live">
-                <a href="//www.kdwb.com/listen" target="_blank" title="Listen Live">
+                <a href="//www.iheart.com/live/1201/?autoplay=true&pname=787&campid=mobile_push_menu&cid=index.html" target="_blank" title="Listen Live">
                     <div class="small-4 play"><span>&nbsp;</span></div>
                     <div class="small-7 cta">
                         <span>Listen Live</span>
@@ -216,6 +218,7 @@ color: #000000;
                                                                         <li><a href="http://www.kdwb.com/onair/dave-ryan-42602/" target="_self"><span>Dave Ryan</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/onair/falen-46948/" target="_self"><span>Falen</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/onair/steveo-42610/" target="_self"><span>Steve-O</span></a></li>
+                                                                        <li><a href="http://www.kdwb.com/onair/jordan-56412/" target="_self"><span>Jordan</span></a></li>
                                                                         <li><a href="http://www.iheart.com/show/139-The-Dave-Ryan-Show/" target="_blank"><span>Dave Ryan Show on iHeartRadio</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/media" target="_self"><span>-- Podcasts --</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/media/podcast-dave-ryan-show-podcast_drshow/" target="_self"><span>Dave Ryan Show</span></a></li>
@@ -234,10 +237,9 @@ color: #000000;
                                                                         <li><a href="http://www.kdwb.com/onair/the-dave-ryan-show-53769/" target="_self"><span>Dave Ryan in the Morning Show</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/onair/ryan-seacrest-52241/" target="_self"><span>On Air with Ryan Seacrest</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/onair/lucas-50756/" target="_self"><span>Lucas</span></a></li>
-                                                                        <li><a href="http://www.kdwb.com/onair/big-d-50757/" target="_self"><span>Big D</span></a></li>
+                                                                        <li><a href="http://www.kdwb.com/onair/raven-56442/" target="_self"><span>Raven</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/onair/mike-56086/" target="_self"><span>Mike</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/onair/dan-riggs-53930/" target="_self"><span>Dan Riggs</span></a></li>
-                                                                        <li><a href="http://www.kdwb.com/onair/katie-46978/" target="_self"><span>Katie</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/cc-common/evolutionwithpetetong/" target="_self"><span>Evolution with Pete Tong</span></a></li>
                                                                     </ul>
                             </div>
@@ -266,6 +268,7 @@ color: #000000;
                                                                         <li><a href="http://www.kdwb.com/contests" target="_self"><span>Contests</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/cc-common/register" target="_self"><span>Become a KDWB VIP</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/cc-common/register/edit.html" target="_self"><span>Edit Your VIP Profile</span></a></li>
+                                                                        <li><a href="http://img.ccrd.clearchannel.com/media/mlib/787/2015/04/default/ihr_summer_pool_party_rules_ad_0_1430127400.pdf" target="_self"><span>Summer Pool Party rules addednum</span></a></li>
                                                                     </ul>
                             </div>
                                                     </section>
@@ -273,17 +276,16 @@ color: #000000;
                                                                                                                                                                                                             <div class="title children"><a href="http://www.kdwb.com/calendar" target="_self"><span>Connect</span></a></div>
                                                         <div class="content">
                                 <ul>
-                                                                        <li><a href="http://www.kdwb.com/pages/info/contact.html" target="_self"><span>Contact Us</span></a></li>
-                                                                        <li><a href="http://www.kdwb.com/calendar/concerts-9" target="_self"><span>Concert Calendar</span></a></li>
+                                                                        <li><a href="http://www.kdwb.com/features/contact-1013-kdwb-342/" target="_self"><span>Contact KDWB</span></a></li>
+                                                                        <li><a href="http://www.kdwb.com/features/contact-1013-kdwb-342/ " target="_self"><span>Directions to KDWB</span></a></li>
+                                                                        <li><a href="http://www.kdwb.com/calendar/concerts-9" target="_self"><span>Concerts</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/calendar/station-events-1" target="_self"><span>Station Events</span></a></li>
-                                                                        <li><a href="http://www.kdwb.com/calendar/community-2" target="_self"><span>Communities</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/calendar/around-town-5" target="_self"><span>Club Appearances</span></a></li>
                                                                         <li><a href="http://www.facebook.com/1013KDWB" target="_self"><span>Like us on Facebook</span></a></li>
                                                                         <li><a href="http://www.twitter.com/1013KDWB" target="_blank"><span>Follow us on Twitter</span></a></li>
                                                                         <li><a href="http://www.instagram.com/1013KDWB" target="_blank"><span>Follow us on Instagram</span></a></li>
                                                                         <li><a href="http://www.youtube.com/kdwb1013" target="_blank"><span>Subscribe to us on YouTube</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/pages/textclub/" target="_blank"><span>KDWB Text Club</span></a></li>
-                                                                        <li><a href="http://www.kdwb.com/pages/info/directions.html" target="_self"><span>Directions to KDWB</span></a></li>
                                                                         <li><a href="http://twincitiesadvertising.com/" target="_blank"><span>Advertise With Us</span></a></li>
                                                                         <li><a href="https://iheartmedia-openhire.silkroad.com/epostings/index.cfm?version=1&company_id=16586" target="_blank"><span>Careers</span></a></li>
                                                                         <li><a href="http://www.kdwb.com/features/iheartmedia-communities-285" target="_self"><span>iHeartMedia Communities</span></a></li>
@@ -308,15 +310,15 @@ color: #000000;
                     <a href="/"><img src="http://content.clearchannel.com/cc-common/mlib/787/2015/03/default/kdwb_masthead_180x115_0_1425888572.png" alt="101.3 KDWB - Twin Cities' #1 Hit Music Station!" /></a>
                 </div>
                                 <div class="small-2 columns listen  active">
-                    <a href="//www.kdwb.com/listen" class="play" target="_blank" title="Listen Live">Listen Live</a>
+                    <a href="//www.iheart.com/live/1201/?autoplay=true&pname=787&campid=mobile_header&cid=index.html" class="play" target="_blank" title="Listen Live">Listen Live</a>
                 </div>
                                 <div class="clear">&nbsp;</div>
             </section>
                         <section class="cta-menu-wrapper">
                                 <div class="now-playing">
-                    <a href="//www.kdwb.com/listen" target="_blank">
+                    <a href="//www.iheart.com/live/1201/?autoplay=true&pname=787&campid=mobile_now_playing&cid=index.html" target="_blank">
                         <span class="header grey-text">Now Playing on 101.3 KDWB</span>
-                        <div class="track" style="display:none;"><h3><span id="title">Lay Me Down </span>&nbsp;<span class="normal-weight">by&nbsp;<span id="artist">Sam Smith</span></span></h3></div>
+                        <div class="track" style="display:none;"><h3><span id="title">Style</span>&nbsp;<span class="normal-weight">by&nbsp;<span id="artist">Taylor Swift</span></span></h3></div>
                         <div class="station-positioner"><h3>Twin Cities' #1 Hit Music Station!</h3></div>
                         <div class="cta grey-text">Tap <span class="play" title="Play">&nbsp;</span> to listen on <span class="iheartradio" title="iHeartRadio">&nbsp;</span></div>
                     </a>
@@ -344,89 +346,111 @@ color: #000000;
             <div class="content-slider slideshow-wrapper">
                 <ul data-orbit data-options="timer:false; navigation_arrows:false; slide_number:false; bullets:true;">
                                 <li>
-                <a href="/features/kdwb-star-party-2015-98">
+                <a href="/features/iheartradio-live-9/articles/15/489531/iheartradio-live-with-chris-brown-13692532/">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/04/default/star_party_dl_670x340_revised_0_1428426713.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Star Party 2015 • May 15th • MYTH" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Artist_Projects/ChrisBrown/IHRL_June/670x339_artist.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Watch NOW!" />
                         <figcaption class="small-6 columns">
-                            <h4>Star Party 2015 • May 15th • MYTH</h4>
-                            <p>Driven by the all new Jeep Renegade</p>
+                            <h4>Watch NOW!</h4>
+                            <p>Chris Brown is taking over Los Angeles for an exclusive iHeartRadio LIVE performance at 10 PM</p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/articles/five-questions-with-486069/interview-tove-los-talking-body-in-13475946/">
+                <a href="/features/pepsi-out-of-the-blue-summer-839">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Artist_Projects/ToveLo/5Things_Apr/WendyGeorge-0599-DL.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="INTERVIEW: Tove Lo's Talking Body In 5 Real Life Situations" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/06/default/dl_ootb_becky_g_0_1434727761.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Becky G at Pepsi's Out Of The Blue Summer at Mall Of America" />
                         <figcaption class="small-6 columns">
-                            <h4>INTERVIEW: Tove Lo's Talking Body In 5 Real Life Situations</h4>
+                            <h4>Becky G at Pepsi's Out Of The Blue Summer at Mall Of America</h4>
                             <p></p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/onair/the-dave-ryan-show-53769/watch-the-dave-ryan-show-roast-13476608/">
+                <a href="http://www.iheart.com/show/23396745/?episode_id=27266380">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/04/default/falen_roast_dl_670x340_0_1428363319.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="WATCH: The Dave Ryan Show Roast of Falen" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Artist_Projects/SelenaGomez/WP_June/670x339_wp_logo.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="WORLD PREMIERE: Selena Gomez 'Good For You'" />
                         <figcaption class="small-6 columns">
-                            <h4>WATCH: The Dave Ryan Show Roast of Falen</h4>
-                            <p>Everyone should get roasted on their birthday!</p>
+                            <h4>WORLD PREMIERE: Selena Gomez 'Good For You'</h4>
+                            <p>Listen to her new song on demand now!</p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/photos/main/surprising-musician-middle-names-419071">
+                <a href="/contests/ravens-summer-of-selfies-win-a-trip-to-las-vegas-to-see-trey-songz/382053">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Galleries/MiddleNames/MiddleNames_POPAC.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="PHOTOS: Surprising Musician Middle Names" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/06/default/dl_raven_summer_of_selfies_0_1434463165.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Win a trip to the iHeartRadio Music Festival in Las Vegas!" />
                         <figcaption class="small-6 columns">
-                            <h4>PHOTOS: Surprising Musician Middle Names</h4>
-                            <p>Amelia, Ray, Louise, oh my!</p>
+                            <h4>Win a trip to the iHeartRadio Music Festival in Las Vegas!</h4>
+                            <p>Post a selfie with Raven and hashtags #iHeartRavenKDWB & #SweepstakesEntry for your chance to win!</p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/contests/star-party-2015-will-call-window/368587">
+                <a href="/articles/national-trending-pop-104650/go-behind-the-scenes-of-flo-13696014/">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/04/default/sp_will_call_window_dl_670x340_0_1428401021.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="See your name in the Star Party Will Call Window? You won #KDWBStarParty tickets" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Artist_Projects/FloRida/CrashingTheSet/670DL.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Crashing The Set: Flo Rida ft. Robin Thicke" />
                         <figcaption class="small-6 columns">
-                            <h4>See your name in the Star Party Will Call Window? You won #KDWBStarParty tickets</h4>
-                            <p>Sign up to win every day! Powered by Jersey Mike's!</p>
+                            <h4>Crashing The Set: Flo Rida ft. Robin Thicke</h4>
+                            <p>iHeartRadio goes behind the scenes of their new music video <em>I Don't Like It, I Love It </em></p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/photos/pop-pics/44-misheard-song-lyrics-419378#/0/23808521">
+                <a href="/contests/win-a-pepsi-out-of-the-blue-music-experience-to-lollapalooza/379039">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Galleries/MisheardLyrics/MisheardLyrics_DL_Pop.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="PHOTOS: 44 Misheard Song Lyrics" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/06/default/pepsi_lollapalooza_dl_670x340__0_1433522797.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Pepsi wants to give you and a guest a Pepsi Out Of The Blue Summer Music Experience to Lollapalooza" />
                         <figcaption class="small-6 columns">
-                            <h4>PHOTOS: 44 Misheard Song Lyrics</h4>
-                            <p>You know you thought it...</p>
+                            <h4>Pepsi wants to give you and a guest a Pepsi Out Of The Blue Summer Music Experience to Lollapalooza</h4>
+                            <p>Including 3-day VIP passes, airfare, hotel & transportation</p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/features/kdwb-star-party-2015-98/articles/15/491795/kdwb-star-party-meet-greet-mondays-13474062/">
+                <a href="/onair/raven-56442/vote-now-ravens-rando-radio-13695513/">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/04/default/star_party_meet_and_greet_mond_0_1428316020.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/06/default/dl_ravens_rando_radio_0_1434720890.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="What random song should Raven play tonight?" />
                         <figcaption class="small-6 columns">
-                            <h4></h4>
-                            <p></p>
+                            <h4>What random song should Raven play tonight?</h4>
+                            <p>Vote and listen for your pick at 9:35pm! </p>
                         </figcaption>
                     </figure>
                 </a>
                 </li>
                                 <li>
-                <a href="/calendar/may-9-2015/bike-ms-428636/">
+                <a href="http://www.iheart.com/show/139-The-Dave-Ryan-Show/">
                     <figure>
-                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/03/default/bike_ms_dl_670x340_0_1426762445.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Bike MS" />
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/04/default/dave_ryan_show_podcast_dl_0_1429788249.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="The Dave Ryan Show Replay" />
                         <figcaption class="small-6 columns">
-                            <h4>Bike MS</h4>
-                            <p>Make a difference in the lives of families with Multiple Sclerosis</p>
+                            <h4>The Dave Ryan Show Replay</h4>
+                            <p>Listen to any episode of the Dave Ryan Show any time!</p>
+                        </figcaption>
+                    </figure>
+                </a>
+                </li>
+                                <li>
+                <a href="http://www.iheart.com/live/967-pride-radio-6920/?autoplay=true">
+                    <figure>
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/787/2015/06/default/dl_pride_generic_0_1434457554.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="96.7 Pride Radio is here" />
+                        <figcaption class="small-6 columns">
+                            <h4>96.7 Pride Radio is here</h4>
+                            <p>Now LGBT Twin Cities has a station that shares itss lifestyle! Listen Live on iHeartRadio</p>
+                        </figcaption>
+                    </figure>
+                </a>
+                </li>
+                                <li>
+                <a href="http://www.mysticlake.com/rockandrockets.php">
+                    <figure>
+                        <img src="http://content.clearchannel.com/cc-common/gallery/thumbNew.php?src=/export/home/jacor-common/mlib/612/06/612_1434750819.jpg&wmax=500&hmax=246&quality=100" class="small-6 columns" alt="Mystic Lake Presents: Rock & Rockets!" />
+                        <figcaption class="small-6 columns">
+                            <h4>Mystic Lake Presents: Rock & Rockets!</h4>
+                            <p>Food Trucks, Beer Gardens, Games, Giveaways, and More!</p>
                         </figcaption>
                     </figure>
                 </a>
@@ -438,57 +462,57 @@ color: #000000;
                         <!-- BEGIN::TIMELINE -->
             <div class="timeline">
                 <section class="timelineContainer">
-                                                                                <a href="/onair/mike-56086/omg-there-are-300-new-emojis-13484173">
-                <figure id="feed_item_2778457">
-                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/787/2015/04/210x210/new_racially_diverse_emojis_0_1428515163.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="OMG! There are 300 new emojis in the new iOS update!" />
-                    <figcaption class="small-8">
-                        <h4>Blogs</h4>
-                        <p>OMG! There are 300 new emojis in the new iOS update!</p>
-                    </figcaption>
-                </figure>
-            </a>
-                                                                    <a href="/articles/entertainment-news-468953/watch-taraji-p-henson-channels-cookie-13484297">
-                <figure id="feed_item_2778548">
-                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/2015/04/default/taraji_0_1428517419.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="WATCH: Taraji P. Henson Channels Cookie & Slaps Co-Host In Face In 'SNL' Preview" />
+                                                                                <a href="/articles/trending-104650/watch-selena-gomez-imitates-taylor-swift-13701233">
+                <figure id="feed_item_2969171">
+                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/2015/06/default/selena_gomez_0_1434998382.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="WATCH: Selena Gomez Imitates Taylor Swift & Shakira, Raps A$AP Rocky & More" />
                     <figcaption class="small-8">
                         <h4>News</h4>
-                        <p>WATCH: Taraji P. Henson Channels Cookie & Slaps Co-Host In Face In 'SNL' Preview</p>
+                        <p>WATCH: Selena Gomez Imitates Taylor Swift & Shakira, Raps A$AP Rocky & More</p>
                     </figcaption>
                 </figure>
             </a>
-                                                                    <a href="/articles/trending-104650/selena-family-announces-plans-for-hologram-13484047">
-                <figure id="feed_item_2778353">
-                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/2015/04/default/selena_0_1428513026.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="Selena Family Announces Plans For Hologram Tour " />
+                                                                    <a href="/articles/trending-104650/listen-to-janet-jacksons-seductive-comeback-13698878">
+                <figure id="feed_item_2969167">
+                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/06/2135_1434980624.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="Listen To Janet Jackson's Seductive Comeback Single 'No Sleeep'" />
                     <figcaption class="small-8">
                         <h4>News</h4>
-                        <p>Selena Family Announces Plans For Hologram Tour </p>
+                        <p>Listen To Janet Jackson's Seductive Comeback Single 'No Sleeep'</p>
                     </figcaption>
                 </figure>
             </a>
-                                                                    <a href="/photos/caught-on-camera/busted-59-celebrities-with-tax-troubles-419067/">
-                <figure id="feed_item_2743734">
-                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Galleries/TaxTroubles/TaxSpark_ACPOP.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="BUSTED! 59 Celebrities With Tax Troubles" />
+                                                                    <a href="/articles/trending-104650/go-behindthescenes-of-flo-ridas-block-13696014">
+                <figure id="feed_item_2966215">
+                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/06/2135_1434746910.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="Go Behind-The-Scenes Of Flo Rida's Block Party Themed New Video" />
+                    <figcaption class="small-8">
+                        <h4>News</h4>
+                        <p>Go Behind-The-Scenes Of Flo Rida's Block Party Themed New Video</p>
+                    </figcaption>
+                </figure>
+            </a>
+                                                                    <a href="/photos/firefly-music-festival/2015-firefly-music-festival-426542/">
+                <figure id="feed_item_2965380">
+                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/06/2135_1434989785.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="2015 Firefly Music Festival" />
                     <figcaption class="small-8">
                         <h4>Photos</h4>
-                        <p>BUSTED! 59 Celebrities With Tax Troubles</p>
+                        <p>2015 Firefly Music Festival</p>
                     </figcaption>
                 </figure>
             </a>
-                                                                    <a href="/photos/icons/pop-pics-948/">
-                <figure id="feed_item_2516478">
-                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/8169/04/8169_1428504648.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="Pop Pics" />
+                                                                    <a href="/photos/pop-pics/36-musician-breakups-425713/">
+                <figure id="feed_item_2946676">
+                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Galleries/MusicianBreakUps/MusicianBreakUps_Spark_Pop.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="36 Musician Breakups" />
                     <figcaption class="small-8">
                         <h4>Photos</h4>
-                        <p>Pop Pics</p>
+                        <p>36 Musician Breakups</p>
                     </figcaption>
                 </figure>
             </a>
-                                                                    <a href="/articles/trending-104650/woman-gives-her-boyfriend-a-beyonce-13483512">
-                <figure id="feed_item_2777865">
-                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/2135/2015/03/default/beyonce_0_1426178603.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="Woman Gives Her Boyfriend A Beyonce Quiz To Stay In Their Relationship" />
+                                                                    <a href="/photos/photos-that-rock/50-banned-license-plates-from-across-392511/">
+                <figure id="feed_item_2963675">
+                    <img src="http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/promographics/iHRNetworks2015/Galleries/BannedLicensePlates/LicensePlates_Spark.jpg&wmax=250&hmax=250&quality=80" class="small-3 columns" alt="50 Banned License Plates From Across America" />
                     <figcaption class="small-8">
-                        <h4>News</h4>
-                        <p>Woman Gives Her Boyfriend A Beyonce Quiz To Stay In Their Relationship</p>
+                        <h4></h4>
+                        <p>50 Banned License Plates From Across America</p>
                     </figcaption>
                 </figure>
             </a>
@@ -506,12 +530,12 @@ color: #000000;
                                 <section class="onair-now">
                     <div class="columns"><h2>On Air Now</h2></div>
                     <div class="clear">&nbsp;</div>
-                    <a href="/onair/big-d-50757/">
+                    <a href="/onair/raven-56442/">
                         <figure>
-                                                        <img src=" http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/787/2014/12/default/bigd_blog_profile_0_1417716066.jpg&amp;wmax=240&amp;hmax=240&amp;quality=100" class="small-3 columns" alt="Big D" />
+                                                        <img src=" http://content.clearchannel.com/cc-common/gallery/thumbCrop.php?src=/export/home/jacor-common/mlib/787/2015/06/default/raven_blog_photo_0_1433850617.jpg&amp;wmax=240&amp;hmax=240&amp;quality=100" class="small-3 columns" alt="Raven" />
                                                         <figcaption class="small-8">
-                                <h4>Big D</h4>
-                                <h5>6PM - 10PM</h5>
+                                <h4>Raven</h4>
+                                <h5>6PM - 11PM</h5>
                             </figcaption>
                         </figure>
                     </a>
@@ -527,21 +551,48 @@ color: #000000;
                                 <section class="onair-playlist">
                     <div class="columns"><h2>Recently Played</h2></div>
                     <div class="clear">&nbsp;</div>
-                                        <a href="http://www.iheart.com/artist/sam-smith-423762/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                                        <a href="http://www.iheart.com/artist/jeremih-43480/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
                         <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/26915953?ops=fit(240,240)" class="small-3 columns" alt="Lay Me Down  by Sam Smith" />
+                            <img src="http://iscale.iheart.com/catalog/track/26917204?ops=fit(240,240)" class="small-3 columns" alt="Don't Tell 'Em by Jeremih" />
                             <figcaption class="small-8">
-                                <h4>Lay Me Down </h4>
-                                <h5>by Sam Smith</h5>
+                                <h4>Don't Tell 'Em</h4>
+                                <h5>by Jeremih</h5>
                             </figcaption>
                         </figure>
                     </a>
-                                        <a href="http://www.iheart.com/artist/jeremih-yg-43480/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                                        <a href="http://www.iheart.com/artist/andy-grammer-433709/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
                         <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/26917204?ops=fit(240,240)" class="small-3 columns" alt="Don't Tell Em  by Jeremih / YG" />
+                            <img src="http://iscale.iheart.com/catalog/track/27489705?ops=fit(240,240)" class="small-3 columns" alt="Honey, I'm Good. by Andy Grammer" />
                             <figcaption class="small-8">
-                                <h4>Don't Tell Em </h4>
-                                <h5>by Jeremih / YG</h5>
+                                <h4>Honey, I'm Good.</h4>
+                                <h5>by Andy Grammer</h5>
+                            </figcaption>
+                        </figure>
+                    </a>
+                                        <a href="http://www.iheart.com/artist/christian-burghardt-734268/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                        <figure>
+                            <img src="http://iscale.iheart.com/catalog/track/28227347?ops=fit(240,240)" class="small-3 columns" alt="Safe Place to Land by Christian Burghardt" />
+                            <figcaption class="small-8">
+                                <h4>Safe Place to Land</h4>
+                                <h5>by Christian Burghardt</h5>
+                            </figcaption>
+                        </figure>
+                    </a>
+                                        <a href="http://www.iheart.com/artist/tove-lo-997421/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                        <figure>
+                            <img src="http://iscale.iheart.com/catalog/track/28440771?ops=fit(240,240)" class="small-3 columns" alt="Talking Body by Tove Lo" />
+                            <figcaption class="small-8">
+                                <h4>Talking Body</h4>
+                                <h5>by Tove Lo</h5>
+                            </figcaption>
+                        </figure>
+                    </a>
+                                        <a href="http://www.iheart.com/artist/nico-vinz-1023722/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                        <figure>
+                            <img src="http://iscale.iheart.com/catalog/track/28680823?ops=fit(240,240)" class="small-3 columns" alt="Am I Wrong by Nico & Vinz" />
+                            <figcaption class="small-8">
+                                <h4>Am I Wrong</h4>
+                                <h5>by Nico & Vinz</h5>
                             </figcaption>
                         </figure>
                     </a>
@@ -554,66 +605,39 @@ color: #000000;
                             </figcaption>
                         </figure>
                     </a>
-                                        <a href="http://www.iheart.com/artist/walk-the-moon-483280/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                                        <a href="http://www.iheart.com/artist/one-direction-687496/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
                         <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/29589909?ops=fit(240,240)" class="small-3 columns" alt="Shut Up And Dance by Walk The Moon" />
+                            <img src="http://iscale.iheart.com/catalog/track/29589761?ops=fit(240,240)" class="small-3 columns" alt="Night Changes by One Direction" />
                             <figcaption class="small-8">
-                                <h4>Shut Up And Dance</h4>
-                                <h5>by Walk The Moon</h5>
+                                <h4>Night Changes</h4>
+                                <h5>by One Direction</h5>
                             </figcaption>
                         </figure>
                     </a>
-                                        <a href="http://www.iheart.com/artist/mark-ronson-and-bruno-mars-30707943/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                                        <a href="http://www.iheart.com/artist/wiz-khalifa-47508/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
                         <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/30271556?ops=fit(240,240)" class="small-3 columns" alt="Uptown Funk  by Mark Ronson And Bruno Mars" />
+                            <img src="http://iscale.iheart.com/catalog/track/30965568?ops=fit(240,240)" class="small-3 columns" alt="See You Again (feat. Charlie Puth) by Wiz Khalifa" />
                             <figcaption class="small-8">
-                                <h4>Uptown Funk </h4>
-                                <h5>by Mark Ronson And Bruno Mars</h5>
+                                <h4>See You Again (feat. Charlie Puth)</h4>
+                                <h5>by Wiz Khalifa</h5>
                             </figcaption>
                         </figure>
                     </a>
-                                        <a href="http://www.iheart.com/artist/tove-lo-997421/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                                        <a href="http://www.iheart.com/artist/taylor-swift-33221/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
                         <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/28440771?ops=fit(240,240)" class="small-3 columns" alt="Talking Body  by Tove Lo" />
+                            <img src="http://iscale.iheart.com/catalog/track/32005917?ops=fit(240,240)" class="small-3 columns" alt="Bad Blood by Taylor Swift" />
                             <figcaption class="small-8">
-                                <h4>Talking Body </h4>
-                                <h5>by Tove Lo</h5>
+                                <h4>Bad Blood</h4>
+                                <h5>by Taylor Swift</h5>
                             </figcaption>
                         </figure>
                     </a>
-                                        <a href="http://www.iheart.com/artist/nick-jonas-30584710/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
+                                        <a href="http://www.iheart.com/artist/the-weeknd-744880/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
                         <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/29167989?ops=fit(240,240)" class="small-3 columns" alt="Chains by Nick Jonas" />
+                            <img src="http://iscale.iheart.com/catalog/track/32612601?ops=fit(240,240)" class="small-3 columns" alt="Can't Feel My Face by The Weeknd" />
                             <figcaption class="small-8">
-                                <h4>Chains</h4>
-                                <h5>by Nick Jonas</h5>
-                            </figcaption>
-                        </figure>
-                    </a>
-                                        <a href="http://www.iheart.com/artist/ellie-goulding-418015/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
-                        <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/30663869?ops=fit(240,240)" class="small-3 columns" alt="Love Me Like You Do  by Ellie Goulding" />
-                            <figcaption class="small-8">
-                                <h4>Love Me Like You Do </h4>
-                                <h5>by Ellie Goulding</h5>
-                            </figcaption>
-                        </figure>
-                    </a>
-                                        <a href="http://www.iheart.com/artist/bob-taylor-swift-654805/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
-                        <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/17572893?ops=fit(240,240)" class="small-3 columns" alt="Both Of Us  by B.O.B. / Taylor Swift" />
-                            <figcaption class="small-8">
-                                <h4>Both Of Us </h4>
-                                <h5>by B.O.B. / Taylor Swift</h5>
-                            </figcaption>
-                        </figure>
-                    </a>
-                                        <a href="http://www.iheart.com/artist/dillon-francis-30406110/?autoplay=true&pname=787&campid=mobile_homepage_recentlyplayed&cid=%2F" target="_blank">
-                        <figure>
-                            <img src="http://iscale.iheart.com/catalog/track/28917214?ops=fit(240,240)" class="small-3 columns" alt="Get Low  by Dillon Francis" />
-                            <figcaption class="small-8">
-                                <h4>Get Low </h4>
-                                <h5>by Dillon Francis</h5>
+                                <h4>Can't Feel My Face</h4>
+                                <h5>by The Weeknd</h5>
                             </figcaption>
                         </figure>
                     </a>
@@ -668,6 +692,7 @@ color: #000000;
         googletag.cmd.push(function() { googletag.display('dfp-ad-2006'); });
     }//if
 </script>
+
 </div>
 <!-- END::LAYOUT_MAIN -->    <!-- BEGIN::LAYOUT_FOOTER -->
                 <footer class="siteFooter">
@@ -694,6 +719,7 @@ color: #000000;
                                                                 <li><a href="http://www.kdwb.com/onair/dave-ryan-42602/" target="_self"><span>Dave Ryan</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/onair/falen-46948/" target="_self"><span>Falen</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/onair/steveo-42610/" target="_self"><span>Steve-O</span></a></li>
+                                                                <li><a href="http://www.kdwb.com/onair/jordan-56412/" target="_self"><span>Jordan</span></a></li>
                                                                 <li><a href="http://www.iheart.com/show/139-The-Dave-Ryan-Show/" target="_blank"><span>Dave Ryan Show on iHeartRadio</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/media" target="_self"><span>-- Podcasts --</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/media/podcast-dave-ryan-show-podcast_drshow/" target="_self"><span>Dave Ryan Show</span></a></li>
@@ -712,10 +738,9 @@ color: #000000;
                                                                 <li><a href="http://www.kdwb.com/onair/the-dave-ryan-show-53769/" target="_self"><span>Dave Ryan in the Morning Show</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/onair/ryan-seacrest-52241/" target="_self"><span>On Air with Ryan Seacrest</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/onair/lucas-50756/" target="_self"><span>Lucas</span></a></li>
-                                                                <li><a href="http://www.kdwb.com/onair/big-d-50757/" target="_self"><span>Big D</span></a></li>
+                                                                <li><a href="http://www.kdwb.com/onair/raven-56442/" target="_self"><span>Raven</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/onair/mike-56086/" target="_self"><span>Mike</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/onair/dan-riggs-53930/" target="_self"><span>Dan Riggs</span></a></li>
-                                                                <li><a href="http://www.kdwb.com/onair/katie-46978/" target="_self"><span>Katie</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/cc-common/evolutionwithpetetong/" target="_self"><span>Evolution with Pete Tong</span></a></li>
                                                             </ul>
                         </div>
@@ -744,6 +769,7 @@ color: #000000;
                                                                 <li><a href="http://www.kdwb.com/contests" target="_self"><span>Contests</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/cc-common/register" target="_self"><span>Become a KDWB VIP</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/cc-common/register/edit.html" target="_self"><span>Edit Your VIP Profile</span></a></li>
+                                                                <li><a href="http://img.ccrd.clearchannel.com/media/mlib/787/2015/04/default/ihr_summer_pool_party_rules_ad_0_1430127400.pdf" target="_self"><span>Summer Pool Party rules addednum</span></a></li>
                                                             </ul>
                         </div>
                                             </section>
@@ -751,17 +777,16 @@ color: #000000;
                                                                                                                                                                                 <div class="title children"><a href="http://www.kdwb.com/calendar" target="_self"><span>Connect</span></a></div>
                                                 <div class="content">
                             <ul>
-                                                                <li><a href="http://www.kdwb.com/pages/info/contact.html" target="_self"><span>Contact Us</span></a></li>
-                                                                <li><a href="http://www.kdwb.com/calendar/concerts-9" target="_self"><span>Concert Calendar</span></a></li>
+                                                                <li><a href="http://www.kdwb.com/features/contact-1013-kdwb-342/" target="_self"><span>Contact KDWB</span></a></li>
+                                                                <li><a href="http://www.kdwb.com/features/contact-1013-kdwb-342/ " target="_self"><span>Directions to KDWB</span></a></li>
+                                                                <li><a href="http://www.kdwb.com/calendar/concerts-9" target="_self"><span>Concerts</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/calendar/station-events-1" target="_self"><span>Station Events</span></a></li>
-                                                                <li><a href="http://www.kdwb.com/calendar/community-2" target="_self"><span>Communities</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/calendar/around-town-5" target="_self"><span>Club Appearances</span></a></li>
                                                                 <li><a href="http://www.facebook.com/1013KDWB" target="_self"><span>Like us on Facebook</span></a></li>
                                                                 <li><a href="http://www.twitter.com/1013KDWB" target="_blank"><span>Follow us on Twitter</span></a></li>
                                                                 <li><a href="http://www.instagram.com/1013KDWB" target="_blank"><span>Follow us on Instagram</span></a></li>
                                                                 <li><a href="http://www.youtube.com/kdwb1013" target="_blank"><span>Subscribe to us on YouTube</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/pages/textclub/" target="_blank"><span>KDWB Text Club</span></a></li>
-                                                                <li><a href="http://www.kdwb.com/pages/info/directions.html" target="_self"><span>Directions to KDWB</span></a></li>
                                                                 <li><a href="http://twincitiesadvertising.com/" target="_blank"><span>Advertise With Us</span></a></li>
                                                                 <li><a href="https://iheartmedia-openhire.silkroad.com/epostings/index.cfm?version=1&company_id=16586" target="_blank"><span>Careers</span></a></li>
                                                                 <li><a href="http://www.kdwb.com/features/iheartmedia-communities-285" target="_self"><span>iHeartMedia Communities</span></a></li>
@@ -775,7 +800,7 @@ color: #000000;
                     <li><a href="/articles/legal-477363/terms-of-use-11584658/">Terms&nbsp;of&nbsp;Use</a></li>
             <li><a href="/articles/legal-477363/privacy-and-cookie-notice-11584630/">Privacy&nbsp;Statement</a></li>
             <li><a href="/articles/legal-477363/terms-of-use-11584658/">Copyright&nbsp;and&nbsp;Trademark&nbsp;Notice</a></li>
-            <li><a href="//www.kdwb.comhttp://www.kdwb.com/articles/careers-478617/recruitment-alert-9786047/?desktop=true&amp;desktopviewduration=86400">EEO&nbsp;Public&nbsp;File</a></li>
+            <li><a href="http://www.kdwb.com/articles/careers-478617/recruitment-alert-9786047/?desktop=true&amp;desktopviewduration=86400" target="_blank">EEO&nbsp;Public&nbsp;File</a></li>
             <li><a href="//www.kdwb.com/go/contests/guidelines/?desktop=true&amp;desktopviewduration=86400">General&nbsp;Contest&nbsp;Guidelines</a></li>
             <li><a href="//www.kdwb.com/go/YourAdHere?desktop=true&amp;desktopviewduration=86400">Advertise&nbsp;with&nbsp;Us</a></li>
         
@@ -787,12 +812,14 @@ color: #000000;
 
 <script type="text/javascript">
 $LAB
+    .script("//flint-img.ccrd.clearchannel.com/app/js/e2eDetect.js")
     .script("/clientscripts/s_code.js")
     .wait(function(){
         s.pageName = "home:index.html";
         s.pageType = "home";
-        if (window.eyesToEarsABtest) {
-            s.prop32= window.eyesToEarsABtest;
+        if (window.e2eTrackingValue) {
+            s.prop41 = window.e2eTrackingValue;
+            s.eVar41 = window.e2eTrackingValue;
         }
                 s.prop2 = "m.kdwb.com";
                 s.prop3 = "home";
@@ -801,8 +828,8 @@ $LAB
                 s.prop7 = "MINNEAPOLIS-MN";
                 s.prop8 = "CHRPOP";
                 s.prop10 = "home";
-                s.prop11 = "6:30 PM";
-                s.prop12 = "Wednesday";
+                s.prop11 = "8:53 PM";
+                s.prop12 = "Monday";
                 s.prop13 = "Weekday";
                 s.prop25 = "MINNEAPOLIS-MN:KDWB-FM:CHRPOP";
                 s.prop26 = "MINNEAPOLIS-MN:KDWB-FM:Home";
@@ -855,7 +882,7 @@ $(function(){
 </script>
         <div style="height:1px;line-height:0px">
     <img src=" http://b.scorecardresearch.com/p?c1=2&amp;c2=6036262&amp;c4=http%3A%2F%2Fm.kdwb.com%2F" alt="*" style="width:1px;height:1px;border:none;" />
-</div>                    </footer>
+</div>        	            </footer>
 
     <!-- END::LAYOUT_FOOTER -->
 
@@ -901,7 +928,7 @@ $(function(){
     var qo = document.createElement('script'); 
     qo.type = 'text/javascript'; 
     qo.async = true;
-    qo.src = '//content.clearchannel.com/cc-common/js/quickio.js';
+    qo.src = '//flint-img.ccrd.clearchannel.com/common/js/lib/quickio.js';
 
     qo.onload = function(){
 
@@ -953,5 +980,7 @@ $(function(){
 })();
 
 </script>
-<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"25b61230c4","applicationID":"5383723","transactionName":"Y1AANhZWCkBUVRAKXVoaIRcXQwteGg==","queueTime":0,"applicationTime":175,"atts":"TxcDQF5MGU4=","errorBeacon":"bam.nr-data.net","agent":"js-agent.newrelic.com\/nr-627.min.js"}</script></body>
+
+<!-- LOCAL ALERTS -->
+</body>
 </html>
