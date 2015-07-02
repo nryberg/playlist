@@ -29,10 +29,14 @@ func check(e error) {
 
 func process_station(file string, path string) []Track {
 	station, err := os.Open(path + "/" + file)
-
-	timestamp_string := file[0:20]
+	index_dashes := strings.Index(file, "--")
+	timestamp_string := file[0:index_dashes]
 	timestamp, err := time.Parse(time.RFC3339, timestamp_string)
-	station_name := file[22:strings.Index(file, ".")]
+	station_name := file[(index_dashes + 2):strings.Index(file, ".")]
+
+	fmt.Println(timestamp)
+	fmt.Println(station_name)
+
 	check(err)
 
 	defer station.Close()
@@ -105,6 +109,8 @@ func main() {
 		pwd := os.Getenv("MONGPWD")
 		dialtone = "mongodb://" + user + ":" + pwd + "@" + mongo_server // linus.mongohq.com:10031/shorten"
 	}
+
+	fmt.Println(dialtone)
 
 	session, err := mgo.Dial(dialtone)
 	if err != nil {
