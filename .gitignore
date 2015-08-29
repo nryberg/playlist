@@ -1,3 +1,5 @@
 /stations
 /fetcher/station_data
 /fetcher/go_fetch_stations
+*.zip
+*.csv
