@@ -7,7 +7,7 @@ import (
 	"github.com/boltdb/bolt"
 	"io/ioutil"
 	"log"
-	"net/http"
+	//"net/http"
 	"time"
 )
 
@@ -31,17 +31,18 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
 	station_id := "185"
-	url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
+	//url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
+	/*
+		res, err := http.Get(url)
+		if err != nil {
+			panic(err.Error())
+		}
 
-	res, err := http.Get(url)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-
-	// body, err := ioutil.ReadFile("sample.json")
+		body, err := ioutil.ReadAll(res.Body)
+	*/
+	body, err := ioutil.ReadFile("sample.json")
 
 	if err != nil {
 		panic(err.Error())
@@ -62,6 +63,19 @@ func main() {
 		track.Track.TimeStamp = time.Now().Format(time.RFC3339)
 		track.Track.UNIXTime = time.Now().Unix()
 		track.Track.StationID = station_id
+		err = writetracks(&data, db)
 		fmt.Printf("%d: %s - %s (%d) [%s]\n", i, track.Track.Artist, track.Track.Title, track.Track.SongID, track.Track.TimeStamp)
 	}
+}
+
+func writetracks(data *Data, db *bolt.DB) error {
+	err := db.Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists([]byte("Tracks"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		err = b.Put([]byte("answer"), []byte("42"))
+		return nil
+	})
+	return err
 }
