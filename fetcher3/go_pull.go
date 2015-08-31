@@ -12,22 +12,19 @@ import (
 )
 
 type Data struct {
-	Tracks
+	Tracks    `json:"tracks"`
 	StationID string
 }
 
 type Tracks []struct {
-	Track
+	Track `json:"track"`
 }
 
 type Track struct {
-	Artist    string `json:"artistName"`
-	ArtistID  int64  `json:"thumbplay_artist_id,string"`
-	SongID    int64  `json:"thumbplay_song_id,string"`
-	Title     string `json:"trackTitle"`
-	StationID string
-	TimeStamp string
-	UNIXTime  int64
+	Artist   string `json:"artistName"`
+	ArtistID int64  `json:"thumbplay_artist_id,string"`
+	SongID   int64  `json:"thumbplay_song_id,string"`
+	Title    string `json:"trackTitle"`
 }
 
 func main() {
@@ -37,18 +34,19 @@ func main() {
 	}
 	defer db.Close()
 	var data *Data
+	fmt.Println("Time,Station,LineID,ArtistID,TrackID,Artist,Title\n")
 	err = db.View(func(tx *bolt.Tx) error {
 		var err error
 		b := tx.Bucket([]byte("tracks"))
 		b.ForEach(func(k, v []byte) error {
 			//fmt.Printf("key=%s, value=%s\n", k, v)
+			//fmt.Printf("key=%s, value=%s\n", k, v)
 			err = json.Unmarshal(v, &data)
 			if err != nil {
-				//fmt.Printf("%T\n%s\n%#v\n", err, err, err)
 				return nil
 			}
-			//fmt.Println(data)
-			csv := PrintCSV(data)
+
+			csv := PrintCSV(k, data)
 			fmt.Println(csv)
 			return nil
 		})
@@ -59,12 +57,13 @@ func main() {
 	})
 }
 
-func PrintCSV(data *Data) string {
+func PrintCSV(timestamp []byte, data *Data) string {
+	//output := "Time,Station,LineID,ArtistID,TrackID,Artist,Title\n"
+	timestring := fmt.Sprintf("%s", timestamp)
 	station_id := data.StationID
-	output := station_id + ","
 	for i, track := range data.Tracks {
-		fmt.Println(track)
-		output += fmt.Sprintf("%d,%s,,%s,%d,,%s,\n", i, track.Track.Artist, track.Track.Title, track.Track.SongID, track.Track.TimeStamp)
+		output += timestring + "," + station_id + ","
+		output += fmt.Sprintf("%d,%d,%d,%s,%s\n", i, track.Track.ArtistID, track.Track.SongID, track.Track.Artist, track.Track.Title)
 	}
 	return output
 }
