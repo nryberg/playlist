@@ -41,30 +41,30 @@ func main() {
 		var err error
 		b := tx.Bucket([]byte("tracks"))
 		b.ForEach(func(k, v []byte) error {
-			fmt.Printf("key=%s, value=%s\n", k, v)
+			//fmt.Printf("key=%s, value=%s\n", k, v)
 			err = json.Unmarshal(v, &data)
 			if err != nil {
 				//fmt.Printf("%T\n%s\n%#v\n", err, err, err)
 				return nil
 			}
-			fmt.Println(data)
-			/*
-				for i, track := range tracks {
-					fmt.Printf("%s - %s (%d) [%s]\n", track.Artist, track.Title, track.SongID, track.TimeStamp)
-				}
-			*/
+			//fmt.Println(data)
+			csv := PrintCSV(data)
+			fmt.Println(csv)
 			return nil
 		})
-		/*
-			c := b.Cursor()
-			for k, v := c.First(); k != nil; k, v = c.Next() {
-				fmt.Printf("key=%s, value=%s\n", k, v)
-			}
-		*/
-		//p, err = decode(b.Get(k))
 		if err != nil {
 			return err
 		}
 		return nil
 	})
+}
+
+func PrintCSV(data *Data) string {
+	station_id := data.StationID
+	output := station_id + ","
+	for i, track := range data.Tracks {
+		fmt.Println(track)
+		output += fmt.Sprintf("%d,%s,,%s,%d,,%s,\n", i, track.Track.Artist, track.Track.Title, track.Track.SongID, track.Track.TimeStamp)
+	}
+	return output
 }

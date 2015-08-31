@@ -63,12 +63,10 @@ func main() {
 
 	buildabucket(db)
 	data.StationID = station_id
-	/*
-		for i, track := range tracks {
-			fmt.Printf("%d: %s - %s (%d) [%s]\n", i, track.Track.Artist, track.Track.Title)
-		}
-	*/
 	err = writetracks(&data, station_id, db)
+	if err != nil {
+		panic(err.Error())
+	}
 }
 
 func writetracks(data *Data, station_id string, db *bolt.DB) error {
@@ -88,8 +86,13 @@ func writetracks(data *Data, station_id string, db *bolt.DB) error {
 
 func buildabucket(db *bolt.DB) {
 	db.Update(func(tx *bolt.Tx) error {
-		err := tx.DeleteBucket([]byte("tracks"))   // use this for testing - wipe the old one for now.
-		_, err = tx.CreateBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
+		/*
+			err := tx.DeleteBucket([]byte("tracks"))   // use this for testing - wipe the old one for now.
+			_, err = tx.CreateBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
+		*/
+
+		_, err := tx.CreateBucketIfNotExists([]byte("tracks")) // working version for now
+
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
 		}
