@@ -12,17 +12,19 @@ import (
 )
 
 type Data struct {
-	Tracks []struct {
-		Track struct {
-			Artist    string `json:"artistName"`
-			ArtistID  int64  `json:"thumbplay_artist_id,string"`
-			SongID    int64  `json:"thumbplay_song_id,string"`
-			Title     string `json:"trackTitle"`
-			StationID string
-			TimeStamp string
-			UNIXTime  int64
-		} `json:"track"`
-	} `json:"tracks"`
+	Tracks    `json:"tracks"`
+	StationID string
+}
+
+type Tracks []struct {
+	Track `json:"track"`
+}
+
+type Track struct {
+	Artist   string `json:"artistName"`
+	ArtistID int64  `json:"thumbplay_artist_id,string"`
+	SongID   int64  `json:"thumbplay_song_id,string"`
+	Title    string `json:"trackTitle"`
 }
 
 func main() {
@@ -59,23 +61,39 @@ func main() {
 		}
 	}
 
-	for i, track := range data.Tracks {
-		track.Track.TimeStamp = time.Now().Format(time.RFC3339)
-		track.Track.UNIXTime = time.Now().Unix()
-		track.Track.StationID = station_id
-		err = writetracks(&data, db)
-		fmt.Printf("%d: %s - %s (%d) [%s]\n", i, track.Track.Artist, track.Track.Title, track.Track.SongID, track.Track.TimeStamp)
-	}
+	buildabucket(db)
+	data.StationID = station_id
+	/*
+		for i, track := range tracks {
+			fmt.Printf("%d: %s - %s (%d) [%s]\n", i, track.Track.Artist, track.Track.Title)
+		}
+	*/
+	err = writetracks(&data, station_id, db)
 }
 
-func writetracks(data *Data, db *bolt.DB) error {
-	err := db.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte("Tracks"))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		err = b.Put([]byte("answer"), []byte("42"))
+func writetracks(data *Data, station_id string, db *bolt.DB) error {
+	enc, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	err = db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("tracks"))
+		key := []byte(time.Now().Format(time.RFC3339))
+
+		err = b.Put(key, enc)
 		return nil
 	})
 	return err
+}
+
+func buildabucket(db *bolt.DB) {
+	db.Update(func(tx *bolt.Tx) error {
+		err := tx.DeleteBucket([]byte("tracks"))   // use this for testing - wipe the old one for now.
+		_, err = tx.CreateBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
 }
