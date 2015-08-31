@@ -6,10 +6,10 @@ import (
 	// "bufio"
 	"fmt"
 	"github.com/boltdb/bolt"
+	"io"
 	"io/ioutil"
 	"log"
-	//"net/http"
-	"io"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -40,24 +40,25 @@ type Station struct {
 
 func main() {
 	stations := FetchStations("./stationlist.csv")
-	fmt.Println(stations)
+	fmt.Println(stations[0].ID)
+
 	db, err := bolt.Open("my.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	station_id := "185"
-	//url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
-	/*
-		res, err := http.Get(url)
-		if err != nil {
-			panic(err.Error())
-		}
+	station_id := stations[0].ID
+	url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
 
-		body, err := ioutil.ReadAll(res.Body)
-	*/
-	body, err := ioutil.ReadFile("sample.json")
+	res, err := http.Get(url)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+
+	//body, err := ioutil.ReadFile("sample.json")
 
 	if err != nil {
 		panic(err.Error())
