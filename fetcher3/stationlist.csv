@@ -1,1 +1,62 @@
-Row,Freq,Location,ID1,Z104.3,Baltimore,10772,107 KISS,Cincinnati,17053,105,Raleigh,16414,93,Syracuse,54875,93,Albuquerque,54126,92 KISS,"Toledo, OH",18617,99.3 KISS,"Harrisburg, PA",19818,101.9 KISS,"Memphis, TN",48649,107.5 KISS,"Des Moines, IA",274010,97.9 KISS,"Jacksonville, FL",50511,100.3 KISS,"Greensboro, NC",162912,95.7 KISS,"Hartford, CT",43313,96.1 KISS,"Pittsburgh, PA",202114,96.5 KISS,"Cleveland, OH",172915,104.7 KISS,"Phoenix, AR",6116,106.1 KISS,"Dallas/Ft Worth, TX",224517,103.5 KISS,"Chicago, IL",84918,108 KISS,"Boston, MA",109719,102.7 KIIS,"Los Angeles, CA",18520,106.7 KISS,"Rochester, NY",151321,102.3 KISS,"Albany, NY",142122,96.1 KISS,"Omaha, NE",133323,96.1 KISS,"Fort Collins, CO",41724,107.3 KISS,"Pensacola, FL",331725,95.9 KISS,"Youngstown, NY",276826,97.3 KISS,"Savannah, GA",80927,101.3 KISS,"Quad Cities, IA",366228,104.5 KISS,"Orange, TX",220129,103.7 KISS,"Chattanooga, TN",453830,96.1 KISS,"Poughkeepsie, NY",148531,93.9 KISS,"Lima, OH",180532,95.9 KISS,"Salisbury, MD",313933,98.3 KISS,"Winchester, VA",329934,95.7 KISS,"Wheeling, WV",430135,107.1 KISS,"Sioux City, IA",282536,103.1 KISS,"Bryan, TX",298637,106.5 KISS,"Huntsville, AL",614338,107.1 KISS,"Tallahassee, FL",65739,101.3,"Minneapolis, MN",120140,100,"New York, NY",146941,96.1,"Atlanta, GA",74141,106.1,"Seattle, WA",425742,102.9,"Dallas, TX",223743,103.5,"Los Angeles, CA",19344,93.3,"San Diego, CA",24145,94,"Minot, ND",529946,103x,"Florence, SC",686247,104.5,"Grand Rapids, MI",117348,96.1,"San Antonio, TX",235749,106.1,"Long Island, NY",590250,96.7 KISS,"Austin, TX",217351,106.5,"Las Vegas, NV",134152,97.3,"Milwaukee, WI",268553,"98,9","Oklahoma City, OK",543554,97.1,"Salt Lake City, UT",240555,98.1,"Kauai, HI",639356,100,"Portland, OR",196157,95.7,"Kansas City, KS",566458,107.5,"Nashville, TN",278459,105,"Norfolk, VA",490060,102.9,"Reno, NV",5347
+Row,Freq,Location,ID
+1,Z104.3,Baltimore,1077
+2,107 KISS,Cincinnati,1705
+3,105,Raleigh,1641
+4,93,Syracuse,5487
+5,93,Albuquerque,5412
+6,92 KISS,"Toledo, OH",1861
+7,99.3 KISS,"Harrisburg, PA",1981
+8,101.9 KISS,"Memphis, TN",4864
+9,107.5 KISS,"Des Moines, IA",2740
+10,97.9 KISS,"Jacksonville, FL",505
+11,100.3 KISS,"Greensboro, NC",1629
+12,95.7 KISS,"Hartford, CT",433
+13,96.1 KISS,"Pittsburgh, PA",2021
+14,96.5 KISS,"Cleveland, OH",1729
+15,104.7 KISS,"Phoenix, AR",61
+16,106.1 KISS,"Dallas/Ft Worth, TX",2245
+17,103.5 KISS,"Chicago, IL",849
+18,108 KISS,"Boston, MA",1097
+19,102.7 KIIS,"Los Angeles, CA",185
+20,106.7 KISS,"Rochester, NY",1513
+21,102.3 KISS,"Albany, NY",1421
+22,96.1 KISS,"Omaha, NE",1333
+23,96.1 KISS,"Fort Collins, CO",417
+24,107.3 KISS,"Pensacola, FL",3317
+25,95.9 KISS,"Youngstown, NY",2768
+26,97.3 KISS,"Savannah, GA",809
+27,101.3 KISS,"Quad Cities, IA",3662
+28,104.5 KISS,"Orange, TX",2201
+29,103.7 KISS,"Chattanooga, TN",4538
+30,96.1 KISS,"Poughkeepsie, NY",1485
+31,93.9 KISS,"Lima, OH",1805
+32,95.9 KISS,"Salisbury, MD",3139
+33,98.3 KISS,"Winchester, VA",3299
+34,95.7 KISS,"Wheeling, WV",4301
+35,107.1 KISS,"Sioux City, IA",2825
+36,103.1 KISS,"Bryan, TX",2986
+37,106.5 KISS,"Huntsville, AL",6143
+38,107.1 KISS,"Tallahassee, FL",657
+39,101.3,"Minneapolis, MN",1201
+40,100,"New York, NY",1469
+41,96.1,"Atlanta, GA",741
+41,106.1,"Seattle, WA",4257
+42,102.9,"Dallas, TX",2237
+43,103.5,"Los Angeles, CA",193
+44,93.3,"San Diego, CA",241
+45,94,"Minot, ND",5299
+46,103x,"Florence, SC",6862
+47,104.5,"Grand Rapids, MI",1173
+48,96.1,"San Antonio, TX",2357
+49,106.1,"Long Island, NY",5902
+50,96.7 KISS,"Austin, TX",2173
+51,106.5,"Las Vegas, NV",1341
+52,97.3,"Milwaukee, WI",2685
+53,"98,9","Oklahoma City, OK",5435
+54,97.1,"Salt Lake City, UT",2405
+55,98.1,"Kauai, HI",6393
+56,100,"Portland, OR",1961
+57,95.7,"Kansas City, KS",5664
+58,107.5,"Nashville, TN",2784
+59,105,"Norfolk, VA",4900
+60,102.9,"Reno, NV",5347

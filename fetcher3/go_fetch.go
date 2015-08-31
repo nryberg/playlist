@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	// "bufio"
 	"fmt"
@@ -8,6 +9,9 @@ import (
 	"io/ioutil"
 	"log"
 	//"net/http"
+	"io"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -27,7 +31,16 @@ type Track struct {
 	Title    string `json:"trackTitle"`
 }
 
+type Station struct {
+	Row      int64
+	Freq     string
+	Location string
+	ID       string
+}
+
 func main() {
+	stations := FetchStations("./stationlist.csv")
+	fmt.Println(stations)
 	db, err := bolt.Open("my.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -98,5 +111,39 @@ func buildabucket(db *bolt.DB) {
 		}
 		return nil
 	})
+
+}
+
+func FetchStations(path string) []Station {
+	var stations []Station
+	station_file, err := os.Open("stationlist.csv")
+	if err != nil {
+		log.Fatalf("Error opening file: %v", err)
+	}
+	defer station_file.Close()
+
+	rdr := csv.NewReader(station_file)
+	//rdr.Comma = ','
+	// Drop the header row
+	_, err = rdr.Read()
+	for {
+		var station Station
+		record, err := rdr.Read()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			log.Fatal(err)
+		}
+		station.Row, err = strconv.ParseInt(record[0], 10, 64)
+		station.Freq = record[1]
+		station.Location = record[2]
+		station.ID = record[3]
+		stations = append(stations, station)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return stations
 
 }
