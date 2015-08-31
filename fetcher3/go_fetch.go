@@ -39,8 +39,8 @@ type Station struct {
 }
 
 func main() {
+
 	stations := FetchStations("./stationlist.csv")
-	fmt.Println(stations[0].ID)
 
 	db, err := bolt.Open("my.db", 0600, nil)
 	if err != nil {
@@ -48,7 +48,32 @@ func main() {
 	}
 	defer db.Close()
 
-	station_id := stations[0].ID
+	buildabucket(db)
+	counter := 0
+	max := 59
+	ticker := time.NewTicker(time.Second * 10)
+	go func() {
+		for t := range ticker.C {
+			station := stations[counter]
+			fmt.Println(t, " - Fetching station: ", station.Location)
+			station_id := station.ID
+			data := FetchStationData(station_id)
+			err = writetracks(&data, station_id, db)
+			counter += 1
+			if counter >= max {
+				counter = 0
+			}
+		}
+	}()
+	time.Sleep(time.Second * 60)
+	ticker.Stop()
+	fmt.Println("Done pulling stations")
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func FetchStationData(station_id string) Data {
 	url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
 
 	res, err := http.Get(url)
@@ -75,12 +100,9 @@ func main() {
 		}
 	}
 
-	buildabucket(db)
 	data.StationID = station_id
-	err = writetracks(&data, station_id, db)
-	if err != nil {
-		panic(err.Error())
-	}
+	return data
+
 }
 
 func writetracks(data *Data, station_id string, db *bolt.DB) error {
@@ -100,12 +122,12 @@ func writetracks(data *Data, station_id string, db *bolt.DB) error {
 
 func buildabucket(db *bolt.DB) {
 	db.Update(func(tx *bolt.Tx) error {
+		err := tx.DeleteBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
 		/*
-			err := tx.DeleteBucket([]byte("tracks"))   // use this for testing - wipe the old one for now.
 			_, err = tx.CreateBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
 		*/
 
-		_, err := tx.CreateBucketIfNotExists([]byte("tracks")) // working version for now
+		_, err = tx.CreateBucketIfNotExists([]byte("tracks")) // working version for now
 
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
