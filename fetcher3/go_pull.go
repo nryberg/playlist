@@ -34,7 +34,8 @@ func main() {
 	}
 	defer db.Close()
 	var data *Data
-	fmt.Println("Time,Station,LineID,ArtistID,TrackID,Artist,Title\n")
+	fmt.Println("Time,Station,LineID,ArtistID,TrackID,Artist,Title")
+
 	err = db.View(func(tx *bolt.Tx) error {
 		var err error
 		b := tx.Bucket([]byte("tracks"))
@@ -47,7 +48,7 @@ func main() {
 			}
 
 			csv := PrintCSV(k, data)
-			fmt.Println(csv)
+			fmt.Printf(csv)
 			return nil
 		})
 		if err != nil {
@@ -59,6 +60,7 @@ func main() {
 
 func PrintCSV(timestamp []byte, data *Data) string {
 	//output := "Time,Station,LineID,ArtistID,TrackID,Artist,Title\n"
+	output := ""
 	timestring := fmt.Sprintf("%s", timestamp)
 	station_id := data.StationID
 	for i, track := range data.Tracks {
