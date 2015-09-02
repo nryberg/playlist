@@ -40,6 +40,8 @@ type Station struct {
 
 func main() {
 
+	ticker := time.NewTicker(time.Second * 30)
+
 	stations := FetchStations("./stationlist.csv")
 
 	db, err := bolt.Open("my.db", 0600, nil)
@@ -49,28 +51,26 @@ func main() {
 	defer db.Close()
 
 	buildabucket(db)
-	counter := 0
-	max := 59
-	ticker := time.NewTicker(time.Second * 10)
+	//	counter := 0
+	//	max := 59
 	go func() {
 		for t := range ticker.C {
-			station := stations[counter]
+			fmt.Println(t)
+			station_number := TimeTwice(t)
+			station := stations[station_number]
 			fmt.Println(t, " - Fetching station: ", station.Location)
 			station_id := station.ID
 			data := FetchStationData(station_id)
 			err = writetracks(&data, station_id, db)
-			counter += 1
-			if counter >= max {
-				counter = 0
+			if err != nil {
+				panic(err.Error())
 			}
 		}
 	}()
-	time.Sleep(time.Second * 60)
+	time.Sleep(time.Minute * 30)
 	ticker.Stop()
-	fmt.Println("Done pulling stations")
-	if err != nil {
-		panic(err.Error())
-	}
+	fmt.Println("Ticker stopped")
+
 }
 
 func FetchStationData(station_id string) Data {
@@ -169,4 +169,19 @@ func FetchStations(path string) []Station {
 	}
 	return stations
 
+}
+
+func TimeTwice(t time.Time) int {
+	var out float64
+	var final int
+	working := t.Minute()
+	if working >= 30 {
+		working -= 30
+	}
+	out = float64(working)
+	if t.Minute() > 30 {
+		out += .5
+	}
+	final = int((out * 2))
+	return final
 }
