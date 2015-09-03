@@ -44,7 +44,7 @@ func main() {
 
 	stations := FetchStations("./stationlist.csv")
 
-	db, err := bolt.Open("my.db", 0600, nil)
+	db, err := bolt.Open("tracks_2015_09_02.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
