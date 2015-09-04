@@ -43,6 +43,7 @@ func main() {
 	stations := FetchStations("./stationlist.csv")
 
 	db, err := bolt.Open("2015_09_03_tracks.db", 0600, nil)
+
 	if err != nil {
 		log.Fatal(err)
 	}
