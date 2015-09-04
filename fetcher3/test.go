@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -9,7 +10,7 @@ func main() {
 	n := time.Now()
 	fmt.Println(n)
 	fmt.Println(n.Second())
-
+	log.Println(n)
 	ticker := time.NewTicker(time.Second)
 
 	go func() {

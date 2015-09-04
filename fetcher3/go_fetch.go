@@ -39,8 +39,10 @@ type Station struct {
 }
 
 func main() {
-
+	log.Println("Loading stations")
 	stations := FetchStations("./stationlist.csv")
+
+	log.Println("Opening database")
 
 	db, err := bolt.Open("2015_09_03_tracks.db", 0600, nil)
 
@@ -50,10 +52,13 @@ func main() {
 	defer db.Close()
 
 	buildabucket(db)
+
+	log.Println("Fetching station 1")
 	err = FetchAStationNow(stations, db)
 	fmt.Println("Waiting")
 	time.Sleep(30 * time.Second)
 
+	log.Println("Fetching station 2")
 	err = FetchAStationNow(stations, db)
 
 	if err != nil {
@@ -64,10 +69,9 @@ func main() {
 
 func FetchAStationNow(stations []Station, db *bolt.DB) error {
 	now := time.Now()
-	fmt.Println(now)
 	station_number := TimeTwice(now)
 	station := stations[station_number]
-	fmt.Println(now, " - Fetching station: ", station.Location)
+	log.Println("Fetching station: ", station.Location)
 	station_id := station.ID
 	data := FetchStationData(station_id)
 	err := writetracks(&data, station_id, db)
