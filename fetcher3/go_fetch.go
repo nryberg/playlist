@@ -40,36 +40,37 @@ type Station struct {
 
 func main() {
 
-	ticker := time.NewTicker(time.Second * 30)
-
 	stations := FetchStations("./stationlist.csv")
 
-	db, err := bolt.Open("my.db", 0600, nil)
+	db, err := bolt.Open("2015_09_03_tracks.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	buildabucket(db)
-	//	counter := 0
-	//	max := 59
-	go func() {
-		for t := range ticker.C {
-			fmt.Println(t)
-			station_number := TimeTwice(t)
-			station := stations[station_number]
-			fmt.Println(t, " - Fetching station: ", station.Location)
-			station_id := station.ID
-			data := FetchStationData(station_id)
-			err = writetracks(&data, station_id, db)
-			if err != nil {
-				panic(err.Error())
-			}
-		}
-	}()
-	time.Sleep(time.Minute * 30)
-	ticker.Stop()
-	fmt.Println("Ticker stopped")
+	err = FetchAStationNow(stations, db)
+	fmt.Println("Waiting")
+	time.Sleep(30 * time.Second)
+
+	err = FetchAStationNow(stations, db)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+}
+
+func FetchAStationNow(stations []Station, db *bolt.DB) error {
+	now := time.Now()
+	fmt.Println(now)
+	station_number := TimeTwice(now)
+	station := stations[station_number]
+	fmt.Println(now, " - Fetching station: ", station.Location)
+	station_id := station.ID
+	data := FetchStationData(station_id)
+	err := writetracks(&data, station_id, db)
+	return err
 
 }
 
@@ -179,7 +180,7 @@ func TimeTwice(t time.Time) int {
 		working -= 30
 	}
 	out = float64(working)
-	if t.Minute() > 30 {
+	if t.Second() > 30 {
 		out += .5
 	}
 	final = int((out * 2))

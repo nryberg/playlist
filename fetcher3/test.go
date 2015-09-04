@@ -10,13 +10,12 @@ func main() {
 	fmt.Println(n)
 	fmt.Println(n.Second())
 
-	ticker := time.NewTicker(time.Millisecond * 500)
+	ticker := time.NewTicker(time.Second)
 
 	go func() {
 		for t := range ticker.C {
 			//			value := t.Second() + t.Nanosecond()
-			work := TimeByHalves(t)
-			str := fmt.Sprintf("%d.%d : %.2f => %d", t.Second(), t.Nanosecond(), work, TimeTwice(t))
+			str := fmt.Sprintf("%v :: %d.%d : %d", t, t.Minute(), t.Second(), TimeTwice(t))
 			fmt.Println(str)
 		}
 	}()
@@ -30,29 +29,16 @@ func main() {
 	}
 }
 
-func TimeByHalves(t time.Time) float64 {
-	var out float64
-	working := t.Second()
-	if working > 30 {
-		working -= 30
-	}
-	out = float64(working)
-	if t.Nanosecond() > 500000000 {
-		out += .5
-	}
-
-	return out
-}
-
 func TimeTwice(t time.Time) int {
 	var out float64
 	var final int
-	working := t.Second()
+	working := t.Minute()
 	if working >= 30 {
 		working -= 30
 	}
 	out = float64(working)
-	if t.Nanosecond() > 500000000 {
+	//if t.Nanosecond() > 500000000 {
+	if t.Second() > 30 {
 		out += .5
 	}
 	final = int((out * 2))
