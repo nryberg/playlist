@@ -39,12 +39,15 @@ type Station struct {
 }
 
 func main() {
+	stationlist := os.Getenv("STATIONS")
+	log.Println("StationList: ", stationlist)
 	log.Println("Loading stations")
-	stations := FetchStations("./stationlist.csv")
+	stations := FetchStations(stationlist)
 
-	log.Println("Opening database")
+	databasePath := os.Getenv("FETCHDB")
 
-	db, err := bolt.Open("2015_09_03_tracks.db", 0600, nil)
+	log.Println("Opening database:", databasePath)
+	db, err := bolt.Open(databasePath, 0600, nil)
 
 	if err != nil {
 		log.Fatal(err)
