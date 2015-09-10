@@ -27,10 +27,9 @@ type Track struct {
 
 func main() {
 	//db, err := openDatabase("./data/tracks.db")
-	databasePath := os.Getenv("FETCHDB")
+	databasePath := os.Getenv("TRACKSDB")
 	log.Println("Database Path: ", databasePath)
 	db, err := bolt.Open(databasePath, 0600, nil)
-	//	db, err := bolt.Open(path, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,12 +39,12 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Database: ", db.Path())
-	data, err := fetchTracks(db)
+	data, err := fetchTracks(db, 5)
 	log.Println(data.Timestamp, data.StationID)
 
 }
 
-func fetchTracks(db *bolt.DB) (Data, error) {
+func fetchTracks(db *bolt.DB, limit int) (Data, error) {
 	var data Data
 	log.Println("In Fetch: ", db.Path())
 	err := errors.New("What happened?")
@@ -53,27 +52,18 @@ func fetchTracks(db *bolt.DB) (Data, error) {
 
 		b := tx.Bucket([]byte("tracks"))
 		c := b.Cursor()
-		for k, v := c.First(); k != nil; k, v = c.Next() {
+		k, v := c.First()
+		for i := 0; i <= limit; i++ {
+			//for k, v := c.First(); k != nil; k, v = c.Next() {
 			err = json.Unmarshal(v, &data)
 			if err != nil {
 				log.Fatal(err)
 			}
 			key := string(k[:])
 			data.Timestamp = key
-			log.Println(key)
+			log.Println(i, key)
 
 		}
-
-		//k, v := c.Last()
-		/*
-			err = json.Unmarshal(v, &data)
-			if err != nil {
-				log.Fatal(err)
-			}
-			key := string(k[:])
-			data.Timestamp = key
-			log.Println(key)
-		*/
 
 		return nil
 	})
