@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/boltdb/bolt"
 	"log"
+	"os"
 )
 
 type Data struct {
@@ -26,7 +27,9 @@ type Track struct {
 
 func main() {
 	//db, err := openDatabase("./data/tracks.db")
-	db, err := bolt.Open("./data/tracks.db", 0600, nil)
+	databasePath := os.Getenv("FETCHDB")
+	log.Println("Database Path: ", databasePath)
+	db, err := bolt.Open(databasePath, 0600, nil)
 	//	db, err := bolt.Open(path, 0600, nil)
 	if err != nil {
 		log.Fatal(err)

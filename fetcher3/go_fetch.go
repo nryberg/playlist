@@ -18,6 +18,7 @@ import (
 type Data struct {
 	Tracks    `json:"tracks"`
 	StationID string
+	Timestamp string
 }
 
 type Tracks []struct {
@@ -115,6 +116,7 @@ func FetchStationData(station_id string) Data {
 }
 
 func writetracks(data *Data, station_id string, db *bolt.DB) error {
+	data.Timestamp = time.Now().Format(time.RFC3339)
 	enc, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -131,12 +133,13 @@ func writetracks(data *Data, station_id string, db *bolt.DB) error {
 
 func buildabucket(db *bolt.DB) {
 	db.Update(func(tx *bolt.Tx) error {
-		err := tx.DeleteBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
+		//err := tx.DeleteBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
+		// well that bit me on the rear when I attempted to go to production.
 		/*
 			_, err = tx.CreateBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
 		*/
 
-		_, err = tx.CreateBucketIfNotExists([]byte("tracks")) // working version for now
+		_, err := tx.CreateBucketIfNotExists([]byte("tracks")) // working version for now
 
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
