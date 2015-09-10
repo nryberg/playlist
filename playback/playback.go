@@ -23,6 +23,8 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Database: ", db.Path())
+	tracks, err := fetchTracks(&db)
+	log.Println(tracks[0])
 
 	//http.Handle("/", fs)
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -34,11 +36,13 @@ func main() {
 
 func fetchTracks(db *bolt.DB) ([]Track, error) {
 	var tracks []Track
+	log.Println("In Fetch: ", db.Path())
 	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("tracks"))
+		/*b := tx.Bucket([]byte("tracks"))
 		c := b.Cursor()
 		k, v := c.First()
 		log.Println(k, v)
+		*/
 		return nil
 	})
 	return tracks, err
