@@ -50,7 +50,7 @@ func main() {
 	db, err := bolt.Open(databasePath, 0600, nil)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failure Opening database: ", databasePath, err)
 	}
 	defer db.Close()
 
