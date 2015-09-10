@@ -58,7 +58,7 @@ func main() {
 
 	log.Println("Fetching station 1")
 	err = FetchAStationNow(stations, db)
-	fmt.Println("Waiting")
+	log.Println("Waiting for next station in 30 secs")
 	time.Sleep(30 * time.Second)
 
 	log.Println("Fetching station 2")
@@ -148,7 +148,7 @@ func buildabucket(db *bolt.DB) {
 
 func FetchStations(path string) []Station {
 	var stations []Station
-	station_file, err := os.Open("stationlist.csv")
+	station_file, err := os.Open(path)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
 	}
