@@ -26,7 +26,6 @@ type Track struct {
 }
 
 func main() {
-	//db, err := openDatabase("./data/tracks.db")
 	databasePath := os.Getenv("TRACKSDB")
 	log.Println("Database Path: ", databasePath)
 	db, err := bolt.Open(databasePath, 0600, nil)

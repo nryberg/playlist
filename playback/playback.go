@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/boltdb/bolt"
 	"html/template"
 	"log"
@@ -8,6 +10,16 @@ import (
 	"os"
 	"path"
 )
+
+type Data struct {
+	Tracks    `json:"tracks"`
+	StationID string
+	Timestamp string
+}
+
+type Tracks []struct {
+	Track `json:"track"`
+}
 
 type Track struct {
 	Artist   string `json:"artistName"`
@@ -18,13 +30,16 @@ type Track struct {
 
 func main() {
 	fs := http.FileServer(http.Dir("static"))
-	db, err := openDatabase("./data/tracks.db")
+	databasePath := os.Getenv("TRACKSDB")
+	log.Println("Database Path: ", databasePath)
+	db, err := bolt.Open(databasePath, 0600, nil)
+	defer db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Database: ", db.Path())
-	tracks, err := fetchTracks(&db)
-	log.Println(tracks[0])
+
+	data, err := fetchTracks(db, 5)
+	log.Println(data.Timestamp, data.StationID)
 
 	//http.Handle("/", fs)
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -32,20 +47,6 @@ func main() {
 
 	log.Println("Listening...")
 	http.ListenAndServe(":3000", nil)
-}
-
-func fetchTracks(db *bolt.DB) ([]Track, error) {
-	var tracks []Track
-	log.Println("In Fetch: ", db.Path())
-	err := db.View(func(tx *bolt.Tx) error {
-		/*b := tx.Bucket([]byte("tracks"))
-		c := b.Cursor()
-		k, v := c.First()
-		log.Println(k, v)
-		*/
-		return nil
-	})
-	return tracks, err
 }
 
 func openDatabase(path string) (bolt.DB, error) {
@@ -57,6 +58,30 @@ func openDatabase(path string) (bolt.DB, error) {
 	return *db, err
 }
 
+func fetchTracks(db *bolt.DB, limit int) (Data, error) {
+	var data Data
+	err := errors.New("What happened?")
+	err = db.View(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte("tracks"))
+		c := b.Cursor()
+		k, v := c.First()
+		for i := 0; i <= limit; i++ {
+			//for k, v := c.First(); k != nil; k, v = c.Next() {
+			err = json.Unmarshal(v, &data)
+			if err != nil {
+				log.Fatal(err)
+			}
+			key := string(k[:])
+			data.Timestamp = key
+
+		}
+
+		return nil
+	})
+
+	return data, err
+}
 func serveTemplate(w http.ResponseWriter, r *http.Request) {
 	lp := path.Join("templates", "layout.html")
 	fp := path.Join("templates", r.URL.Path)
