@@ -55,7 +55,7 @@ func main() {
 	}
 	defer db.Close()
 
-	buildabucket(db)
+	buildabucket(db, "tracks")
 
 	log.Println("Fetching station 1")
 	err = FetchAStationNow(stations, db)
@@ -131,15 +131,10 @@ func writetracks(data *Data, station_id string, db *bolt.DB) error {
 	return err
 }
 
-func buildabucket(db *bolt.DB) {
+func buildabucket(db *bolt.DB, bucket_name string) {
 	db.Update(func(tx *bolt.Tx) error {
-		//err := tx.DeleteBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
-		// well that bit me on the rear when I attempted to go to production.
-		/*
-			_, err = tx.CreateBucket([]byte("tracks")) // use this for testing - wipe the old one for now.
-		*/
 
-		_, err := tx.CreateBucketIfNotExists([]byte("tracks")) // working version for now
+		_, err := tx.CreateBucketIfNotExists([]byte(bucket_name)) // working version for now
 
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
