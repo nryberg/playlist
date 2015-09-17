@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"github.com/boltdb/bolt"
 	"io"
 	//"io/ioutil"
@@ -26,6 +27,7 @@ func main() {
 	log.Println("Loading stations")
 	stations := FetchStations(stationlist)
 	log.Println("Station count: ", len(stations))
+
 	databasePath := os.Getenv("FETCHDB")
 
 	log.Println("Opening database:", databasePath)
@@ -37,6 +39,7 @@ func main() {
 	defer db.Close()
 
 	buildabucket(db, "stations")
+	writeStations(stations, "stations", db)
 }
 
 func FetchStations(path string) []Station {
@@ -84,4 +87,21 @@ func buildabucket(db *bolt.DB, bucket_name string) {
 		return nil
 	})
 
+}
+
+func writeStations(stations []Station, bucket_name string, db *bolt.DB) error {
+	err := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(bucket_name))
+		for _, station := range stations {
+			key := []byte(station.ID)
+			enc, err := json.Marshal(station)
+			if err != nil {
+				return err
+			}
+
+			err = b.Put(key, enc)
+		}
+		return nil
+	})
+	return err
 }
