@@ -3,9 +3,20 @@ package main
 import (
 	"encoding/csv"
 	"github.com/boltdb/bolt"
+	"io"
+	//"io/ioutil"
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
+
+type Station struct {
+	Row      int64
+	Freq     string
+	Location string
+	ID       string
+}
 
 func main() {
 
@@ -14,6 +25,7 @@ func main() {
 	log.Println("StationList: ", stationlist)
 	log.Println("Loading stations")
 	stations := FetchStations(stationlist)
+	log.Println("Station count: ", len(stations))
 	databasePath := os.Getenv("FETCHDB")
 
 	log.Println("Opening database:", databasePath)
