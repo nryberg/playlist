@@ -97,7 +97,7 @@ func serveTracks(w http.ResponseWriter, r *http.Request) {
 		// Log the detailed error
 		log.Println(err.Error())
 	}
-	log.Println("From Serve Tracks: ", data.StationID)
+	log.Println(data.StationID)
 	//if err := tmpl.ExecuteTemplate(w, "layout", data); err != nil {
 	if err := tmpl.ExecuteTemplate(w, "layout", data); err != nil {
 		log.Println(err.Error())

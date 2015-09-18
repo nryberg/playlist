@@ -6,7 +6,7 @@ import (
 	"github.com/boltdb/bolt"
 	// "io"
 	//"io/ioutil"
-	// "fmt"
+	"fmt"
 	"log"
 	"os"
 	//"strconv"
@@ -36,6 +36,10 @@ func main() {
 	log.Println("Loading stations")
 	stations, err := FetchStations(db, "stations")
 	log.Println("Station count: ", len(stations))
+	fmt.Printf("Row, StationID, Location\n")
+	for i, station := range stations {
+		fmt.Printf("%d,%s,%s\n", i, station.ID, station.Freq)
+	}
 
 }
 
@@ -47,10 +51,11 @@ func FetchStations(db *bolt.DB, bucket_name string) ([]Station, error) {
 		b := tx.Bucket([]byte(bucket_name))
 		b.ForEach(func(k, v []byte) error {
 			//fmt.Printf("A %s is %s.\n", k, v)
-			err = json.Unmarshal(v, &station)
-			stations = stations.Append(station)
+			_ = json.Unmarshal(v, &station)
+			stations = append(stations, station)
 			return nil
 		})
-}
+		return nil
+	})
 	return stations, err
 }
