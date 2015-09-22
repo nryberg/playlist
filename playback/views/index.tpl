@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Go Pastebin</title>
+<title>Playlist - Playback</title>
 </head>
 <body>
-<h3>Create a Pastebin</h3>
+<h3>Tracks Sample</h3>
 <div>
+<!--
 <form action="/new" method="post">
 <p><label for="title">Title</label>
 <input type="text" name="title" required /></p>
@@ -15,6 +16,7 @@
 </form>
 </div>
 <ul>
+--> 
 {{range .}}
 <li><a href="/paste/{{.Id}}">{{.Title}}</a></li>
 {{end}}
