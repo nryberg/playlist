@@ -3,10 +3,10 @@ package main
 
 import (
 	//	"fmt"
+	_ "./models"
+	"./routers"
 	"log"
-	_ "models"
 	"net/http"
-	"routers"
 )
 
 func main() {

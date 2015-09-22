@@ -16,10 +16,10 @@
 </form>
 </div>
 <ul>
---> 
 {{range .}}
 <li><a href="/paste/{{.Id}}">{{.Title}}</a></li>
 {{end}}
+--> 
 </ul>
 </body>
 </html>

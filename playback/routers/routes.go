@@ -3,7 +3,7 @@ package routers
 
 import (
 	//	"fmt"
-	"controllers"
+	"../controllers"
 	"net/http"
 )
 
@@ -15,6 +15,6 @@ func main() {
 
 func Init() {
 	http.HandleFunc("/", controllers.IndexController)
-	http.HandleFunc("/new", controllers.CreateController)
-	http.HandleFunc("/paste/", controllers.ShowController)
+	http.HandleFunc("/tracks", controllers.CreateController)
+	// http.HandleFunc("/paste/", controllers.ShowController)
 }
