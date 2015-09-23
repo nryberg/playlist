@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Playlist - Playback</title>
+  <title>Playlist - Playback</title>
+  <link rel="stylesheet" href="/static/css/bootstrap.css">
 </head>
 <body>
-<h3>Tracks Sample</h3>
+<h3>Tracks Sample now</h3>
 <div>
 <!--
 <form action="/new" method="post">
