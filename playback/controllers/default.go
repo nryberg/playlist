@@ -9,18 +9,18 @@ import (
 	"net/http"
 	//	"time"
 	//	"strconv"
-	"strings"
+	//"strings"
 )
 
 func TracksController(rw http.ResponseWriter, rq *http.Request) {
-	data, err := models.fetchTracks(5)
-	t, err = template.ParseFiles("src/views/index.tpl")
+	data, err := models.FetchTracks(5)
+	t, err := template.ParseFiles("./views/index.tpl")
 	if err != nil {
 		log.Println(err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	t.Execute(rw, pastes)
+	t.Execute(rw, data)
 	// t.Execute(rw, nil)
 }
 
@@ -42,6 +42,8 @@ func CreateController(rw http.ResponseWriter, rq *http.Request) {
 	t.Execute(rw, paste)
 }
 */
+
+/*
 func ShowController(rw http.ResponseWriter, rq *http.Request) {
 	path := rq.URL.Path
 	parms := strings.Split(path, "/")
@@ -50,7 +52,6 @@ func ShowController(rw http.ResponseWriter, rq *http.Request) {
 	/*	id1, _ := strconv.ParseInt(rawId, 10, 64)
 		id := int(id1)
 		paste := models.GetPaste(id)
-	*/
 	id := models.ToObjectId(rawId)
 	paste := models.GetPaste(id)
 	t, err := template.ParseFiles("src/views/create.tpl")
@@ -62,7 +63,7 @@ func ShowController(rw http.ResponseWriter, rq *http.Request) {
 	//	t.Execute(rw, nil)
 
 }
-
+*/
 /*
 func main() {
 	fmt.Println("Hello World!")

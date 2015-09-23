@@ -46,7 +46,7 @@ func (this Paste) Add() (id bson.ObjectId, err error, createdOn time.Time) {
 }
 */
 
-func fetchTracks(limit int) (Data, error) {
+func FetchTracks(limit int) (Data, error) {
 	databasePath := os.Getenv("TRACKSDB")
 	log.Println("Database Path: ", databasePath)
 	db, err := bolt.Open(databasePath, 0600, nil)

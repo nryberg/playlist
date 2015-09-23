@@ -14,7 +14,7 @@ func main() {
 */
 
 func Init() {
-	http.HandleFunc("/", controllers.IndexController)
-	http.HandleFunc("/tracks", controllers.CreateController)
+	//http.HandleFunc("/", controllers.IndexController)
+	http.HandleFunc("/tracks", controllers.TracksController)
 	// http.HandleFunc("/paste/", controllers.ShowController)
 }
