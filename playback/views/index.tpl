@@ -5,8 +5,22 @@
   <link rel="stylesheet" href="/static/css/bootstrap.css">
 </head>
 <body>
-<h3>Tracks Sample now</h3>
-<div>
+<div class="container">
+  <h3>Tracks Sample</h3>
+<p>{{.Timestamp}}</p>
+<table class="table table-striped">
+  <tr>
+    <th>Artist</th>
+    <th>Title</th>
+  </tr>
+  {{range .Tracks}}
+    <tr>
+      <td>{{.Track.Artist}}</td>
+      <td>{{.Track.Title}}</td>
+    </tr>
+  {{end}}
+</table>
+ 
 <!--
 <form action="/new" method="post">
 <p><label for="title">Title</label>
