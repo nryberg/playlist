@@ -28,7 +28,8 @@ func main() {
 	stations := FetchStations(stationlist)
 	log.Println("Station count: ", len(stations))
 
-	databasePath := os.Getenv("FETCHDB")
+	//databasePath := os.Getenv("FETCHDB")
+	databasePath := os.Getenv("TRACKSDB")
 
 	log.Println("Opening database:", databasePath)
 	db, err := bolt.Open(databasePath, 0600, nil)

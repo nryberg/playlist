@@ -14,6 +14,7 @@ type Data struct {
 	Tracks    `json:"tracks"`
 	StationID string
 	Timestamp string
+	Station
 }
 
 type Tracks []struct {
@@ -25,6 +26,12 @@ type Track struct {
 	ArtistID int64  `json:"thumbplay_artist_id,string"`
 	SongID   int64  `json:"thumbplay_song_id,string"`
 	Title    string `json:"trackTitle"`
+}
+type Station struct {
+	Row      int64
+	Freq     string
+	Location string
+	ID       string
 }
 
 /*
@@ -76,6 +83,10 @@ func FetchTracks(limit int) (Data, error) {
 	})
 
 	log.Println(data.Timestamp, data.StationID)
+	data.Station, err = FetchOneStation(db, "stations", data.StationID)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return data, err
 }
 
@@ -104,3 +115,31 @@ func GetTrack(id string) Track {
 }
 
 */
+
+func FetchStations(db *bolt.DB, bucket_name string) ([]Station, error) {
+	var stations []Station
+	var station Station
+	err := db.View(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte(bucket_name))
+		b.ForEach(func(k, v []byte) error {
+			//fmt.Printf("A %s is %s.\n", k, v)
+			_ = json.Unmarshal(v, &station)
+			stations = append(stations, station)
+			return nil
+		})
+		return nil
+	})
+	return stations, err
+}
+
+func FetchOneStation(db *bolt.DB, bucket_name string, stationName string) (Station, error) {
+	var station Station
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(bucket_name))
+		v := b.Get([]byte(stationName))
+		_ = json.Unmarshal(v, &station)
+		return nil
+	})
+	return station, err
+}

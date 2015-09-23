@@ -8,6 +8,7 @@
 <div class="container">
   <h3>Tracks Sample</h3>
 <p>{{.Timestamp}}</p>
+<h4>{{.Station.Location}}</h4>
 <table class="table table-striped">
   <tr>
     <th>Artist</th>
