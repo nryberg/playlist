@@ -1,14 +1,15 @@
 package main
 
 import (
-	//"encoding/csv"
+	"encoding/binary"
 	"encoding/json"
-	"github.com/boltdb/bolt"
-	//"io"
-	//"io/ioutil"
 	"fmt"
+	"github.com/boltdb/bolt"
 	"log"
 	"os"
+	//"io"
+	//"encoding/csv"
+	//"io/ioutil"
 	//"strconv"
 )
 
@@ -49,13 +50,31 @@ func main() {
 	}
 	defer db.Close()
 
-	buildabucket(db, "artist_id_name")
+	buildabucket(db, "artist_id")
 	buildabucket(db, "artist_name_id")
 
 	data, err := FetchTracks(db, "tracks", 10)
 
-	for _, entry := range data {
-		log.Println(data.StationID)
+	for _, datum := range data {
+		for _, track := range datum.Tracks {
+			log.Println(datum.Timestamp, " : ", track.Artist, track.ArtistID)
+			err := db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte("artist_name_id"))
+				buf := make([]byte, binary.MaxVarintLen64)
+				leng := binary.PutVarint(buf, track.ArtistID)
+				log.Println("Binary conversion: ", leng)
+				err := b.Put([]byte(track.Artist), buf)
+				if err != nil {
+					log.Fatal(err)
+				}
+				return nil
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		//log.Println(datum.StationID)
 	}
 	//	writeStations(stations, "stations", db)
 }
@@ -73,7 +92,7 @@ func buildabucket(db *bolt.DB, bucket_name string) {
 
 }
 
-func writeData(key string, value string, bucket_name string, db *bolt.DB) error {
+func writeString(key string, value string, bucket_name string, db *bolt.DB) error {
 	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucket_name))
 		err := b.Put([]byte(key), []byte(value))
@@ -86,8 +105,9 @@ func writeData(key string, value string, bucket_name string, db *bolt.DB) error 
 	return err
 }
 
-func FetchTracks(db *bolt.DB, bucket_name string, limit int) (Data, error) {
-	var data Data
+func FetchTracks(db *bolt.DB, bucket_name string, limit int) ([]Data, error) {
+	var data []Data
+	var datum Data
 	err := db.View(func(tx *bolt.Tx) error {
 
 		b := tx.Bucket([]byte("tracks"))
@@ -95,19 +115,20 @@ func FetchTracks(db *bolt.DB, bucket_name string, limit int) (Data, error) {
 		k, v := c.First()
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
-			err := json.Unmarshal(v, &data)
+			err := json.Unmarshal(v, &datum)
 			if err != nil {
 				log.Fatal(err)
 			}
 			key := string(k[:])
-			data.Timestamp = key
+			datum.Timestamp = key
+			data = append(data, datum)
 
 		}
 
 		return nil
 	})
 
-	log.Println(data.Timestamp, data.StationID)
+	log.Println(datum.Timestamp, datum.StationID)
 	if err != nil {
 		log.Fatal(err)
 	}
