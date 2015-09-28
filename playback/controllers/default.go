@@ -14,7 +14,19 @@ import (
 
 func TracksController(rw http.ResponseWriter, rq *http.Request) {
 	data, err := models.FetchTracks(5)
-	t, err := template.ParseFiles("./views/index.tpl")
+	t, err := template.ParseFiles("./views/index.tpl", "./views/track_list.tpl")
+	if err != nil {
+		log.Println(err)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	t.Execute(rw, data)
+	// t.Execute(rw, nil)
+}
+
+func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
+	data, err := models.FetchTracks(5)
+	t, err := template.ParseFiles("./views/index.tpl", "./views/track_list.tpl")
 	if err != nil {
 		log.Println(err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)

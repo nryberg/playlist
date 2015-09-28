@@ -61,8 +61,7 @@ func main() {
 			err := db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte("artist_name_id"))
 				buf := make([]byte, binary.MaxVarintLen64)
-				leng := binary.PutVarint(buf, track.ArtistID)
-				log.Println("Binary conversion: ", leng)
+				_ = binary.PutVarint(buf, track.ArtistID)
 				err := b.Put([]byte(track.Artist), buf)
 				if err != nil {
 					log.Fatal(err)

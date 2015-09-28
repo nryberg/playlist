@@ -9,19 +9,8 @@
   <h3>Tracks Sample</h3>
 <p>{{.Timestamp}}</p>
 <h4>{{.Station.Location}}</h4>
-<table class="table table-striped">
-  <tr>
-    <th>Artist</th>
-    <th>Title</th>
-  </tr>
-  {{range .Tracks}}
-    <tr>
-      <td>{{.Track.Artist}}</td>
-      <td>{{.Track.Title}}</td>
-    </tr>
-  {{end}}
-</table>
- 
+
+{{template "tracks" .}}
 <!--
 <form action="/new" method="post">
 <p><label for="title">Title</label>
