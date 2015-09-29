@@ -10,7 +10,7 @@
 <p>{{.Timestamp}}</p>
 <h4>{{.Station.Location}}</h4>
 
-{{template "tracks" .}}
+{{template "content" .}}
 <!--
 <form action="/new" method="post">
 <p><label for="title">Title</label>

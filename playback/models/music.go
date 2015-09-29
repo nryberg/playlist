@@ -10,6 +10,13 @@ import (
 	// "time"
 )
 
+type Station struct {
+	Row      int64
+	Freq     string
+	Location string
+	ID       string
+}
+
 type Data struct {
 	Tracks    `json:"tracks"`
 	StationID string
@@ -34,33 +41,44 @@ type Station struct {
 	ID       string
 }
 
-/*
-const DATABASE = "mgopastebin"
-const PASTES = "pastes"
-
-func (this Paste) Add() (id bson.ObjectId, err error, createdOn time.Time) {
-	session, err1 := GetDB()
-	if err1 != nil {
-		log.Fatal("Error on database start - Add:", err1)
-	}
-	collection := session.DB(DATABASE).C(PASTES)
-	id = bson.NewObjectId()
-	createdOn = time.Now()
-	this.Id = id
-	this.CreatedOn = createdOn
-	err = collection.Insert(&this)
-	return
+type Artist struct {
+	Name string
+	ID   string
 }
-*/
 
-func FetchTracks(limit int) (Data, error) {
-	databasePath := os.Getenv("TRACKSDB")
-	log.Println("Database Path: ", databasePath)
-	db, err := bolt.Open(databasePath, 0600, nil)
+func FetchArtists(limit int) ([]Artist, error) {
+	db, err := openDB()
 	defer db.Close()
+	var artist Artist
+	var artists map[string]string
+	err = db.View(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte("artists"))
+		c := b.Cursor()
+		k, v := c.First()
+		for i := 0; i <= limit; i++ {
+			//for k, v := c.First(); k != nil; k, v = c.Next() {
+			if k != nil {
+				artists[string(k)] = string(v)
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			k, v := c.Next()
+		}
+		return nil
+	})
+
+	data.Station, err = FetchOneStation(db, "stations", data.StationID)
 	if err != nil {
 		log.Fatal(err)
 	}
+	return data, err
+}
+func FetchTracks(limit int) (Data, error) {
+	db, err := openDB()
+	defer db.Close()
 
 	var data Data
 	err = db.View(func(tx *bolt.Tx) error {
@@ -76,27 +94,15 @@ func FetchTracks(limit int) (Data, error) {
 			}
 			key := string(k[:])
 			data.Timestamp = key
-
 		}
-
 		return nil
 	})
 
-	log.Println(data.Timestamp, data.StationID)
 	data.Station, err = FetchOneStation(db, "stations", data.StationID)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return data, err
-}
-
-func openDatabase(path string) (bolt.DB, error) {
-	db, err := bolt.Open(path, 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	return *db, err
 }
 
 /*
@@ -142,4 +148,15 @@ func FetchOneStation(db *bolt.DB, bucket_name string, stationName string) (Stati
 		return nil
 	})
 	return station, err
+}
+
+func openDB() (*bolt.DB, error) {
+
+	databasePath := os.Getenv("TRACKSDB")
+	db, err := bolt.Open(databasePath, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db, err
 }
