@@ -10,13 +10,6 @@ import (
 	// "time"
 )
 
-type Station struct {
-	Row      int64
-	Freq     string
-	Location string
-	ID       string
-}
-
 type Data struct {
 	Tracks    `json:"tracks"`
 	StationID string
@@ -46,35 +39,39 @@ type Artist struct {
 	ID   string
 }
 
-func FetchArtists(limit int) ([]Artist, error) {
+type Artists []struct {
+	Artist
+	Title string
+}
+
+func FetchArtists(limit int) (Artists, error) {
 	db, err := openDB()
 	defer db.Close()
 	var artist Artist
-	var artists map[string]string
+	var artists Artists
+	log.Println("Fetching Artists")
 	err = db.View(func(tx *bolt.Tx) error {
 
-		b := tx.Bucket([]byte("artists"))
+		b := tx.Bucket([]byte("artist_id"))
 		c := b.Cursor()
 		k, v := c.First()
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
 			if k != nil {
-				artists[string(k)] = string(v)
+				artist.Name = string(v)
+				artist.ID = string(k)
+				artists.Artist = append(artists, artist)
 			}
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			k, v := c.Next()
+			k, v = c.Next()
 		}
 		return nil
 	})
-
-	data.Station, err = FetchOneStation(db, "stations", data.StationID)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return data, err
+	artists.Title = "Artists"
+	return artists, err
 }
 func FetchTracks(limit int) (Data, error) {
 	db, err := openDB()

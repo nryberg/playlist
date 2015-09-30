@@ -6,7 +6,7 @@
   </tr>
   {{range .Artists}}
     <tr>
-      <td>{{.Track.Artist}}</td>
+      <td>{{.}}</td>
       <td>{{.Track.Title}}</td>
     </tr>
   {{end}}

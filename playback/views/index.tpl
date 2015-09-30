@@ -6,9 +6,7 @@
 </head>
 <body>
 <div class="container">
-  <h3>Tracks Sample</h3>
-<p>{{.Timestamp}}</p>
-<h4>{{.Station.Location}}</h4>
+  <h3>{{ .Title }}</h3>
 
 {{template "content" .}}
 <!--

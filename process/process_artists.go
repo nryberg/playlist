@@ -50,7 +50,7 @@ func main() {
 	}
 	defer db.Close()
 
-	buildabucket(db, "artist_id")
+	buildabucket(db, "artists")
 	buildabucket(db, "artist_name_id")
 
 	data, err := FetchTracks(db, "tracks", 10)
@@ -59,10 +59,8 @@ func main() {
 		for _, track := range datum.Tracks {
 			log.Println(datum.Timestamp, " : ", track.Artist, track.ArtistID)
 			err := db.Update(func(tx *bolt.Tx) error {
-				b := tx.Bucket([]byte("artist_name_id"))
-				buf := make([]byte, binary.MaxVarintLen64)
-				_ = binary.PutVarint(buf, track.ArtistID)
-				err := b.Put([]byte(track.Artist), buf)
+				b := tx.Bucket([]byte("artists"))
+				err := b.Put(i64_to_byte(track.ArtistID), []byte(track.Artist))
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -73,11 +71,15 @@ func main() {
 			}
 		}
 
-		//log.Println(datum.StationID)
 	}
-	//	writeStations(stations, "stations", db)
 }
 
+func i64_to_byte(number int64) []byte {
+	buf := make([]byte, binary.MaxVarintLen64)
+	_ = binary.PutVarint(buf, number)
+	return buf
+
+}
 func buildabucket(db *bolt.DB, bucket_name string) {
 	db.Update(func(tx *bolt.Tx) error {
 
