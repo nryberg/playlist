@@ -2,6 +2,8 @@
 package models
 
 import (
+	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"github.com/boltdb/bolt"
 	"log"
@@ -34,33 +36,23 @@ type Station struct {
 	ID       string
 }
 
-type Artist struct {
-	Name string
-	ID   string
-}
-
-type Artists []struct {
-	Artist
-	Title string
-}
-
-func FetchArtists(limit int) (Artists, error) {
+func FetchArtists(limit int) (map[int64]string, error) {
 	db, err := openDB()
 	defer db.Close()
-	var artist Artist
-	var artists Artists
+	var artists map[int64]string
+	artists = make(map[int64]string)
 	log.Println("Fetching Artists")
 	err = db.View(func(tx *bolt.Tx) error {
 
-		b := tx.Bucket([]byte("artist_id"))
+		b := tx.Bucket([]byte("artists"))
 		c := b.Cursor()
 		k, v := c.First()
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
 			if k != nil {
-				artist.Name = string(v)
-				artist.ID = string(k)
-				artists.Artist = append(artists, artist)
+				key := byte_to_i64(k)
+				artists[key] = string(v)
+				log.Println(key)
 			}
 			if err != nil {
 				log.Fatal(err)
@@ -70,9 +62,21 @@ func FetchArtists(limit int) (Artists, error) {
 		}
 		return nil
 	})
-	artists.Title = "Artists"
+	log.Println("Count Artists: ", len(artists))
 	return artists, err
 }
+
+func byte_to_i64(data []byte) int64 {
+	var value int64
+	buf := bytes.NewReader(data)
+	err := binary.Read(buf, binary.LittleEndian, &value)
+	if err != nil {
+		log.Println("Error loading key val")
+	}
+	return value
+
+}
+
 func FetchTracks(limit int) (Data, error) {
 	db, err := openDB()
 	defer db.Close()

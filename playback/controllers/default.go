@@ -32,6 +32,7 @@ func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Println("Counting Artists Again", len(data))
 	t.Execute(rw, data)
 	// t.Execute(rw, nil)
 }

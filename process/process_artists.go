@@ -70,8 +70,8 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-
 	}
+
 }
 
 func i64_to_byte(number int64) []byte {
