@@ -21,7 +21,6 @@ func TracksController(rw http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	t.Execute(rw, data)
-	// t.Execute(rw, nil)
 }
 
 func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
@@ -32,9 +31,7 @@ func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Println("Counting Artists Again", len(data))
 	t.Execute(rw, data)
-	// t.Execute(rw, nil)
 }
 
 /*

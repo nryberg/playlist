@@ -1,23 +1,19 @@
-
 {{define "content"}}
+<p> Artist Table </p>
 <table class="table table-striped">
   <tr>
     <th>Artist</th>
+    <th>Plays</th>
   </tr>
-  {{ range $key, $value := . }}
-   <!-- <li><strong>{{ $key }}</strong>: {{ $value }}</li> -->
+  {{range .}}
     <tr>
-      <td>{{$key}}</td>
-      <td>{{$value}}</td>
-    </tr>
-{{ end }}
-<!--
-  {{range .Artists}}
-    <tr>
-      <td>{{.}}</td>
-      <td>{{.Track.Title}}</td>
+      <td>
+        <a href='/artist/{{.ArtistID}}'>
+          {{.Name}}
+        </a>
+      </td>
+      <td>{{.Plays}}</td>
     </tr>
   {{end}}
-  -->
 </table>
 {{end}}

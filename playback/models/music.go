@@ -36,11 +36,17 @@ type Station struct {
 	ID       string
 }
 
-func FetchArtists(limit int) (map[int64]string, error) {
+type Artist struct {
+	Name     string
+	ArtistID int64
+	Plays    int64
+}
+
+func FetchArtists(limit int) ([]Artist, error) {
 	db, err := openDB()
 	defer db.Close()
-	var artists map[int64]string
-	artists = make(map[int64]string)
+	var artist Artist
+	var artists []Artist
 	log.Println("Fetching Artists")
 	err = db.View(func(tx *bolt.Tx) error {
 
@@ -50,9 +56,9 @@ func FetchArtists(limit int) (map[int64]string, error) {
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
 			if k != nil {
-				key := byte_to_i64(k)
-				artists[key] = string(v)
-				log.Println(key)
+				artist.ArtistID = byte_to_i64(k)
+				artist.Name = string(v)
+				artists = append(artists, artist)
 			}
 			if err != nil {
 				log.Fatal(err)
@@ -62,7 +68,6 @@ func FetchArtists(limit int) (map[int64]string, error) {
 		}
 		return nil
 	})
-	log.Println("Count Artists: ", len(artists))
 	return artists, err
 }
 
