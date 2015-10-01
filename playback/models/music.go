@@ -8,6 +8,7 @@ import (
 	"github.com/boltdb/bolt"
 	"log"
 	"os"
+	"strconv"
 	//"strings"
 	// "time"
 )
@@ -56,9 +57,10 @@ func FetchArtists(limit int) ([]Artist, error) {
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
 			if k != nil {
-				artist.ArtistID = byte_to_i64(k)
+				artist.ArtistID = byte_to_int64(k)
 				artist.Name = string(v)
 				artists = append(artists, artist)
+				log.Println(artist.Name, artist.ArtistID)
 			}
 			if err != nil {
 				log.Fatal(err)
@@ -70,11 +72,54 @@ func FetchArtists(limit int) ([]Artist, error) {
 	})
 	return artists, err
 }
+func Convert(data []byte) (int64, error) {
+	v, err := strconv.ParseUint(string(data), 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return int64(v), nil
+}
+func FetchOneArtist(id int64) (Artist, error) {
+	db, err := openDB()
+	defer db.Close()
+	var artist Artist
+	log.Println("Fetching one Artist:", id)
+	err = db.View(func(tx *bolt.Tx) error {
 
-func byte_to_i64(data []byte) int64 {
-	var value int64
+		b := tx.Bucket([]byte("artists"))
+		key := int64_to_byte(id)
+		log.Println("Key should be: ", key)
+		v := b.Get(key)
+		if v == nil {
+			log.Println("No Key: ", key)
+			log.Println("No Key: ", id)
+		}
+		c := b.Cursor()
+		k, _ := c.First()
+		log.Println("Key is", k)
+		log.Println("Key sample", byte_to_int64(k))
+		conv, _ := Convert(k)
+		log.Println("Key sample 2", conv)
+		v = b.Get(k)
+		log.Println("Value with correct: ", v)
+
+		artist.Name = string(v)
+		log.Println("Value: ", string(v))
+		return nil
+	})
+	return artist, err
+}
+
+func int64_to_byte(number int64) []byte {
+	buf := make([]byte, binary.MaxVarintLen64)
+	_ = binary.PutVarint(buf, number)
+	return buf
+
+}
+
+func byte_to_int64(data []byte) int64 {
 	buf := bytes.NewReader(data)
-	err := binary.Read(buf, binary.LittleEndian, &value)
+	value, err := binary.ReadVarint(buf)
 	if err != nil {
 		log.Println("Error loading key val")
 	}

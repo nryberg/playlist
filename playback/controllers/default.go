@@ -34,6 +34,19 @@ func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
 	t.Execute(rw, data)
 }
 
+func OneArtistController(rw http.ResponseWriter, rq *http.Request) {
+	log.Println("URL:", rq.URL.Path)
+	data, err := models.FetchOneArtist(33221)
+	t, err := template.ParseFiles("./views/index.tpl", "./views/artist.tpl")
+	if err != nil {
+		log.Println(err)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	t.Execute(rw, data)
+
+}
+
 /*
 func CreateController(rw http.ResponseWriter, rq *http.Request) {
 	paste := models.Paste{Title: rq.FormValue("title"), Content: rq.FormValue("content")}

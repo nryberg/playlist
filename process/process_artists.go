@@ -57,10 +57,11 @@ func main() {
 
 	for _, datum := range data {
 		for _, track := range datum.Tracks {
-			log.Println(datum.Timestamp, " : ", track.Artist, track.ArtistID)
 			err := db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte("artists"))
-				err := b.Put(i64_to_byte(track.ArtistID), []byte(track.Artist))
+				key := int64_to_byte(track.ArtistID)
+				log.Println(track.Artist, track.ArtistID, key)
+				err := b.Put(key, []byte(track.Artist))
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -74,7 +75,7 @@ func main() {
 
 }
 
-func i64_to_byte(number int64) []byte {
+func int64_to_byte(number int64) []byte {
 	buf := make([]byte, binary.MaxVarintLen64)
 	_ = binary.PutVarint(buf, number)
 	return buf
