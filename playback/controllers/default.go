@@ -8,8 +8,8 @@ import (
 	"log"
 	"net/http"
 	//	"time"
-	//	"strconv"
-	//"strings"
+	"strconv"
+	"strings"
 )
 
 func TracksController(rw http.ResponseWriter, rq *http.Request) {
@@ -35,8 +35,9 @@ func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
 }
 
 func OneArtistController(rw http.ResponseWriter, rq *http.Request) {
-	log.Println("URL:", rq.URL.Path)
-	data, err := models.FetchOneArtist(33221)
+	ArtistID := strings.Split(rq.URL.Path, "/")[2]
+	ArtistIDint, err := strconv.ParseInt(ArtistID, 10, 64)
+	data, err := models.FetchOneArtist(ArtistIDint)
 	t, err := template.ParseFiles("./views/index.tpl", "./views/artist.tpl")
 	if err != nil {
 		log.Println(err)
