@@ -88,23 +88,13 @@ func FetchOneArtist(id int64) (Artist, error) {
 
 		b := tx.Bucket([]byte("artists"))
 		key := int64_to_byte(id)
-		log.Println("Key should be: ", key)
 		v := b.Get(key)
 		if v == nil {
 			log.Println("No Key: ", key)
 			log.Println("No Key: ", id)
 		}
-		c := b.Cursor()
-		k, _ := c.First()
-		log.Println("Key is", k)
-		log.Println("Key sample", byte_to_int64(k))
-		conv, _ := Convert(k)
-		log.Println("Key sample 2", conv)
-		v = b.Get(k)
-		log.Println("Value with correct: ", v)
-
+		artist.ArtistID = id
 		artist.Name = string(v)
-		log.Println("Value: ", string(v))
 		return nil
 	})
 	return artist, err
