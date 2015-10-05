@@ -8,5 +8,4 @@
     <div class="col-md-2"/><strong>Name</strong></div>
     <div class="col-md-10">{{.Name}}</div>
   </div>
-
 {{end}}
