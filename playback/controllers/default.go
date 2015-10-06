@@ -47,6 +47,19 @@ func OneArtistController(rw http.ResponseWriter, rq *http.Request) {
 	t.Execute(rw, data)
 }
 
+func OneStationController(rw http.ResponseWriter, rq *http.Request) {
+	StationID := strings.Split(rq.URL.Path, "/")[2]
+	StationIDint, err := strconv.ParseInt(StationID, 10, 64)
+	data, err := models.FetchOneStation(StationIDint)
+	t, err := template.ParseFiles("./views/index.tpl", "./views/station.tpl")
+	if err != nil {
+		log.Println(err)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	t.Execute(rw, data)
+}
+
 /*
 func CreateController(rw http.ResponseWriter, rq *http.Request) {
 	paste := models.Paste{Title: rq.FormValue("title"), Content: rq.FormValue("content")}

@@ -72,6 +72,42 @@ func FetchArtists(limit int) ([]Artist, error) {
 	})
 	return artists, err
 }
+
+/*
+func FetchStations(limit int) ([]Station, error) {
+	db, err := openDB()
+	defer db.Close()
+	var station Station
+	var stations []Station
+	log.Println("Fetching Stations")
+	err = db.View(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte("stations"))
+		c := b.Cursor()
+		k, v := c.First()
+		for i := 0; i <= limit; i++ {
+			//for k, v := c.First(); k != nil; k, v = c.Next() {
+			if k != nil {
+				err = json.Unmarshal(v, &station)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				station.ID = string(k)
+				stations = append(stations, station)
+				log.Println(station.Row, station.ID)
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			k, v = c.Next()
+		}
+		return nil
+	})
+	return stations, err
+}
+*/
 func Convert(data []byte) (int64, error) {
 	v, err := strconv.ParseUint(string(data), 10, 64)
 	if err != nil {
@@ -163,12 +199,15 @@ func GetTrack(id string) Track {
 
 */
 
-func FetchStations(db *bolt.DB, bucket_name string) ([]Station, error) {
+func FetchStations(limit int) ([]Station, error) {
+	db, err := openDB()
+	defer db.Close()
+
 	var stations []Station
 	var station Station
-	err := db.View(func(tx *bolt.Tx) error {
+	err = db.View(func(tx *bolt.Tx) error {
 
-		b := tx.Bucket([]byte(bucket_name))
+		b := tx.Bucket([]byte("stations"))
 		b.ForEach(func(k, v []byte) error {
 			//fmt.Printf("A %s is %s.\n", k, v)
 			_ = json.Unmarshal(v, &station)
