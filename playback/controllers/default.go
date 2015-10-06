@@ -45,7 +45,6 @@ func OneArtistController(rw http.ResponseWriter, rq *http.Request) {
 		return
 	}
 	t.Execute(rw, data)
-
 }
 
 /*
