@@ -4,7 +4,6 @@
   <tr>
     <th>Station</th>
     <th>Frequency</th>
-    <th>Plays</th>
   </tr>
   {{range .}}
     <tr>
@@ -14,7 +13,6 @@
         </a>
       </td>
       <td>{{.Freq}}</td>
-      <td>{{.Plays}}</td>
     </tr>
   {{end}}
 </table>
