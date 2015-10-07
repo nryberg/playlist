@@ -39,7 +39,7 @@ func main() {
 		log.Fatal("Failure Opening database: ", databasePath, err)
 	}
 	defer db.Close()
-
+	deleteabucket(db, "stations")
 	buildabucket(db, "stations")
 	writeStations(stations, "stations", db)
 }
@@ -86,6 +86,19 @@ func buildabucket(db *bolt.DB, bucket_name string) {
 
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
+}
+
+func deleteabucket(db *bolt.DB, bucket_name string) {
+	db.Update(func(tx *bolt.Tx) error {
+
+		err := tx.DeleteBucket([]byte(bucket_name)) // working version for now
+
+		if err != nil {
+			return fmt.Errorf("Delete Bucket : %s", err)
 		}
 		return nil
 	})

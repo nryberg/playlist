@@ -197,18 +197,20 @@ func GetTrack(id string) Track {
 func FetchStations(limit int) ([]Station, error) {
 	db, err := openDB()
 	defer db.Close()
-
 	var stations []Station
 	var station Station
 	err = db.View(func(tx *bolt.Tx) error {
 
 		b := tx.Bucket([]byte("stations"))
-		b.ForEach(func(k, v []byte) error {
-			//fmt.Printf("A %s is %s.\n", k, v)
-			_ = json.Unmarshal(v, &station)
-			stations = append(stations, station)
-			return nil
-		})
+		c := b.Cursor()
+		k, v := c.First()
+		for i := 0; i < limit; i++ {
+			if k != nil {
+				_ = json.Unmarshal(v, &station)
+				stations = append(stations, station)
+				k, v = c.Next()
+			}
+		}
 		return nil
 	})
 	return stations, err

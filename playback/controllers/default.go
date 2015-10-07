@@ -13,7 +13,6 @@ import (
 )
 
 func TracksController(rw http.ResponseWriter, rq *http.Request) {
-	log.Println("Controller asking for tracks")
 	data, err := models.FetchTracks(5)
 	t, err := template.ParseFiles("./views/index.tpl", "./views/track_list.tpl")
 	if err != nil {
@@ -21,7 +20,6 @@ func TracksController(rw http.ResponseWriter, rq *http.Request) {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	log.Println("Executing Tracks")
 	t.Execute(rw, data)
 }
 
@@ -41,6 +39,17 @@ func OneArtistController(rw http.ResponseWriter, rq *http.Request) {
 	ArtistIDint, err := strconv.ParseInt(ArtistID, 10, 64)
 	data, err := models.FetchOneArtist(ArtistIDint)
 	t, err := template.ParseFiles("./views/index.tpl", "./views/artist.tpl")
+	if err != nil {
+		log.Println(err)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	t.Execute(rw, data)
+}
+
+func StationsController(rw http.ResponseWriter, rq *http.Request) {
+	data, err := models.FetchStations(5)
+	t, err := template.ParseFiles("./views/index.tpl", "./views/station_list.tpl")
 	if err != nil {
 		log.Println(err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
