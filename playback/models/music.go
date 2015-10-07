@@ -34,7 +34,7 @@ type Station struct {
 	Row      int64
 	Freq     string
 	Location string
-	ID       string
+	ID       int64
 }
 
 type Artist struct {
@@ -48,7 +48,6 @@ func FetchArtists(limit int) ([]Artist, error) {
 	defer db.Close()
 	var artist Artist
 	var artists []Artist
-	log.Println("Fetching Artists")
 	err = db.View(func(tx *bolt.Tx) error {
 
 		b := tx.Bucket([]byte("artists"))
@@ -60,7 +59,6 @@ func FetchArtists(limit int) ([]Artist, error) {
 				artist.ArtistID = byte_to_int64(k)
 				artist.Name = string(v)
 				artists = append(artists, artist)
-				log.Println(artist.Name, artist.ArtistID)
 			}
 			if err != nil {
 				log.Fatal(err)
@@ -119,14 +117,12 @@ func FetchOneArtist(id int64) (Artist, error) {
 	db, err := openDB()
 	defer db.Close()
 	var artist Artist
-	log.Println("Fetching one Artist:", id)
 	err = db.View(func(tx *bolt.Tx) error {
 
 		b := tx.Bucket([]byte("artists"))
 		key := int64_to_byte(id)
 		v := b.Get(key)
 		if v == nil {
-			log.Println("No Key: ", key)
 			log.Println("No Key: ", id)
 		}
 		artist.ArtistID = id
@@ -156,10 +152,8 @@ func byte_to_int64(data []byte) int64 {
 func FetchTracks(limit int) (Data, error) {
 	db, err := openDB()
 	defer db.Close()
-
 	var data Data
 	err = db.View(func(tx *bolt.Tx) error {
-
 		b := tx.Bucket([]byte("tracks"))
 		c := b.Cursor()
 		k, v := c.First()
@@ -174,8 +168,9 @@ func FetchTracks(limit int) (Data, error) {
 		}
 		return nil
 	})
-
-	data.Station, err = FetchOneStation(db, "stations", data.StationID)
+	db.Close()
+	StationID, err := strconv.ParseInt(data.StationID, 10, 64)
+	data.Station, err = FetchOneStation(StationID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -219,11 +214,13 @@ func FetchStations(limit int) ([]Station, error) {
 	return stations, err
 }
 
-func FetchOneStation(db *bolt.DB, bucket_name string, stationName string) (Station, error) {
+func FetchOneStation(id int64) (Station, error) {
+	db, err := openDB()
+	defer db.Close()
 	var station Station
-	err := db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(bucket_name))
-		v := b.Get([]byte(stationName))
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("stations"))
+		v := b.Get(int64_to_byte(id))
 		_ = json.Unmarshal(v, &station)
 		return nil
 	})
@@ -231,9 +228,8 @@ func FetchOneStation(db *bolt.DB, bucket_name string, stationName string) (Stati
 }
 
 func openDB() (*bolt.DB, error) {
-
 	databasePath := os.Getenv("TRACKSDB")
-	db, err := bolt.Open(databasePath, 0600, nil)
+	db, err := bolt.Open(databasePath, 0600, &bolt.Options{ReadOnly: true})
 	if err != nil {
 		log.Fatal(err)
 	}

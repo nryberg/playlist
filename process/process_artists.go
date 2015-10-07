@@ -35,7 +35,7 @@ type Station struct {
 	Row      int64
 	Freq     string
 	Location string
-	ID       string
+	ID       int64
 }
 
 func main() {

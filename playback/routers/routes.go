@@ -32,8 +32,8 @@ func Init() {
 	http.HandleFunc("/artists", controllers.ArtistsController)
 	http.HandleFunc("/artist/", controllers.OneArtistController)
 
-	http.HandleFunc("/stations", controllers.StationsController)
-	http.HandleFunc("/station/", controllers.OneStationController)
+	//http.HandleFunc("/stations", controllers.StationsController)
+	//http.HandleFunc("/station/", controllers.OneStationController)
 
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	// http.HandleFunc("/paste/", controllers.ShowController)

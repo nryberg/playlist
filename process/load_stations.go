@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/csv"
 	"encoding/json"
 	"github.com/boltdb/bolt"
@@ -16,7 +17,7 @@ type Station struct {
 	Row      int64
 	Freq     string
 	Location string
-	ID       string
+	ID       int64
 }
 
 func main() {
@@ -67,7 +68,8 @@ func FetchStations(path string) []Station {
 		station.Row, err = strconv.ParseInt(record[0], 10, 64)
 		station.Freq = record[1]
 		station.Location = record[2]
-		station.ID = record[3]
+		stationID, err := strconv.ParseInt(record[3], 10, 64)
+		station.ID = stationID
 		stations = append(stations, station)
 		if err != nil {
 			log.Fatal(err)
@@ -94,7 +96,7 @@ func writeStations(stations []Station, bucket_name string, db *bolt.DB) error {
 	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucket_name))
 		for _, station := range stations {
-			key := []byte(station.ID)
+			key := int64_to_byte(station.ID)
 			enc, err := json.Marshal(station)
 			if err != nil {
 				return err
@@ -105,4 +107,11 @@ func writeStations(stations []Station, bucket_name string, db *bolt.DB) error {
 		return nil
 	})
 	return err
+}
+
+func int64_to_byte(number int64) []byte {
+	buf := make([]byte, binary.MaxVarintLen64)
+	_ = binary.PutVarint(buf, number)
+	return buf
+
 }
