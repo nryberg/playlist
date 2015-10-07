@@ -35,6 +35,7 @@ type Station struct {
 	Freq     string
 	Location string
 	ID       int64
+	Plays    int64
 }
 
 type Artist struct {
