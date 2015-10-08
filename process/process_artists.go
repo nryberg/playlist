@@ -13,6 +13,12 @@ import (
 	//"strconv"
 )
 
+type Artist struct {
+	Name     string
+	ArtistID int64
+	Plays    int64
+}
+
 type Data struct {
 	Tracks    `json:"tracks"`
 	StationID string
@@ -53,15 +59,23 @@ func main() {
 	buildabucket(db, "artists")
 	buildabucket(db, "artist_name_id")
 
-	data, err := FetchTracks(db, "tracks", 10)
-
+	data, err := FetchTracks(db, "tracks", 1000)
+	var artist Artist
 	for _, datum := range data {
 		for _, track := range datum.Tracks {
 			err := db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte("artists"))
+
+				// TODO: check and see if you've already got this artist -
+				artist.ArtistID = track.ArtistID
+				artist.Name = track.Artist
+				enc, err := json.Marshal(artist)
+				if err != nil {
+					log.Panic("Artist isn't fitting into struct")
+					log.Fatal(err)
+				}
 				key := int64_to_byte(track.ArtistID)
-				log.Println(track.Artist, track.ArtistID, key)
-				err := b.Put(key, []byte(track.Artist))
+				err = b.Put(key, enc)
 				if err != nil {
 					log.Fatal(err)
 				}

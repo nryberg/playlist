@@ -57,8 +57,7 @@ func FetchArtists(limit int) ([]Artist, error) {
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
 			if k != nil {
-				artist.ArtistID = byte_to_int64(k)
-				artist.Name = string(v)
+				err = json.Unmarshal(v, &artist)
 				artists = append(artists, artist)
 			}
 			if err != nil {
@@ -126,8 +125,7 @@ func FetchOneArtist(id int64) (Artist, error) {
 		if v == nil {
 			log.Println("No Key: ", id)
 		}
-		artist.ArtistID = id
-		artist.Name = string(v)
+		err = json.Unmarshal(v, &artist)
 		return nil
 	})
 	return artist, err

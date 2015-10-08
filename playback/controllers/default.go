@@ -24,7 +24,7 @@ func TracksController(rw http.ResponseWriter, rq *http.Request) {
 }
 
 func ArtistsController(rw http.ResponseWriter, rq *http.Request) {
-	data, err := models.FetchArtists(5)
+	data, err := models.FetchArtists(50)
 	t, err := template.ParseFiles("./views/index.tpl", "./views/artist_list.tpl")
 	if err != nil {
 		log.Println(err)
