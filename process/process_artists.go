@@ -72,7 +72,6 @@ func main() {
 				enc, err := json.Marshal(artist)
 				if err != nil {
 					log.Panic("Artist isn't fitting into struct")
-					log.Fatal(err)
 				}
 				key := int64_to_byte(track.ArtistID)
 				err = b.Put(key, enc)
