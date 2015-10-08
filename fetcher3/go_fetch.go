@@ -48,19 +48,23 @@ func main() {
 	databasePath := os.Getenv("FETCHDB")
 
 	log.Println("Opening database:", databasePath)
+
 	db, err := bolt.Open(databasePath, 0600, nil)
 
 	if err != nil {
 		log.Fatal("Failure Opening database: ", databasePath, err)
 	}
-	defer db.Close()
 
 	buildabucket(db, "tracks")
 
 	log.Println("Fetching station 1")
 	err = FetchAStationNow(stations, db)
+	db.Close()
 	log.Println("Waiting for next station in 30 secs")
 	time.Sleep(30 * time.Second)
+
+	db, err = bolt.Open(databasePath, 0600, nil)
+	defer db.Close()
 
 	log.Println("Fetching station 2")
 	err = FetchAStationNow(stations, db)
@@ -191,4 +195,15 @@ func TimeTwice(t time.Time) int {
 	}
 	final = int((out * 2))
 	return final
+}
+
+func openDBWriteable() (*bolt.DB, error) {
+	databasePath := os.Getenv("TRACKSDB")
+	//db, err := bolt.Open(databasePath, 0600, &bolt.Options{ReadOnly: true})
+	db, err := bolt.Open(databasePath, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db, err
 }

@@ -3,3 +3,4 @@
 /fetcher/go_fetch_stations
 *.zip
 *.csv
+*.db
