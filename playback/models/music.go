@@ -156,27 +156,48 @@ func byte_to_int64(data []byte) int64 {
 
 }
 
-func FetchTracks(limit int) (Data, error) {
+func FetchSongs(limit int) ([]Song, error) {
 	db, err := openDB()
 	defer db.Close()
-	var data Song
+	var data []Song
+	var song Song
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("songs"))
 		c := b.Cursor()
 		k, v := c.First()
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
-			err = json.Unmarshal(v, &data)
-			if err != nil {
-				log.Fatal(err)
+			if k != nil {
+				err = json.Unmarshal(v, &song)
+				if err != nil {
+					log.Fatal(err)
+				}
+				data = append(data, song)
+				k, v = c.Next()
 			}
-			key := string(k[:])
-			data.Timestamp = key
 		}
 		return nil
 	})
 	db.Close()
 	return data, err
+}
+
+func FetchOneSong(id int64) (Song, error) {
+	db, err := openDB()
+	defer db.Close()
+	var song Song
+	err = db.View(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte("songs"))
+		key := int64_to_byte(id)
+		v := b.Get(key)
+		if v == nil {
+			log.Println("No Key: ", id)
+		}
+		err = json.Unmarshal(v, &song)
+		return nil
+	})
+	return song, err
 }
 
 /*
