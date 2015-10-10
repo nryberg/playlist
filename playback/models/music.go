@@ -44,6 +44,14 @@ type Artist struct {
 	Plays    int64
 }
 
+type Song struct {
+	SongID      int64
+	Title       string
+	Length_secs int
+	Length_str  string
+	Plays       int
+}
+
 func FetchArtists(limit int) ([]Artist, error) {
 	db, err := openDB()
 	defer db.Close()
@@ -151,9 +159,9 @@ func byte_to_int64(data []byte) int64 {
 func FetchTracks(limit int) (Data, error) {
 	db, err := openDB()
 	defer db.Close()
-	var data Data
+	var data Song
 	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("tracks"))
+		b := tx.Bucket([]byte("songs"))
 		c := b.Cursor()
 		k, v := c.First()
 		for i := 0; i <= limit; i++ {
@@ -168,11 +176,6 @@ func FetchTracks(limit int) (Data, error) {
 		return nil
 	})
 	db.Close()
-	StationID, err := strconv.ParseInt(data.StationID, 10, 64)
-	data.Station, err = FetchOneStation(StationID)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return data, err
 }
 
