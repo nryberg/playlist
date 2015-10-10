@@ -27,7 +27,8 @@ func Init() {
 	*/
 	fs := http.FileServer(http.Dir("static"))
 	//http.HandleFunc("/", controllers.IndexController)
-	http.HandleFunc("/tracks", controllers.TracksController)
+	http.HandleFunc("/songs", controllers.SongsController)
+	http.HandleFunc("/song/", controllers.OneSongController)
 
 	http.HandleFunc("/artists", controllers.ArtistsController)
 	http.HandleFunc("/artist/", controllers.OneArtistController)

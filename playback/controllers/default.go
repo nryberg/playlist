@@ -12,9 +12,22 @@ import (
 	"strings"
 )
 
-func TracksController(rw http.ResponseWriter, rq *http.Request) {
-	data, err := models.FetchTracks(5)
-	t, err := template.ParseFiles("./views/index.tpl", "./views/track_list.tpl")
+func SongsController(rw http.ResponseWriter, rq *http.Request) {
+	data, err := models.FetchSongs(5)
+	t, err := template.ParseFiles("./views/index.tpl", "./views/song_list.tpl")
+	if err != nil {
+		log.Println(err)
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	t.Execute(rw, data)
+}
+
+func OneSongController(rw http.ResponseWriter, rq *http.Request) {
+	SongID := strings.Split(rq.URL.Path, "/")[2]
+	SongIDint, err := strconv.ParseInt(SongID, 10, 64)
+	data, err := models.FetchOneSong(SongIDint)
+	t, err := template.ParseFiles("./views/index.tpl", "./views/song.tpl")
 	if err != nil {
 		log.Println(err)
 		http.Error(rw, err.Error(), http.StatusInternalServerError)

@@ -25,7 +25,7 @@
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/tracks">Tracks</a></li>
+          <li class="active"><a href="/songs">Songs</a></li>
           <li><a href="/artists">Artists</a></li>
           <li><a href="/stations">Stations</a></li>
           <li><a href="#">About</a></li>
