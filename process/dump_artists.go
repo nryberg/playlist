@@ -1,8 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/binary"
-	//	"encoding/json"
+	"encoding/json"
 	"fmt"
 	"github.com/boltdb/bolt"
 	"log"
@@ -26,13 +27,19 @@ func main() {
 		log.Fatal("Failure Opening database: ", err)
 	}
 	defer db.Close()
-
+	var artist Artist
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("artists"))
+		stats := b.Stats()
+		log.Println("Bucket Stats - Key Count: ", stats.KeyN)
 		c := b.Cursor()
 
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			fmt.Printf("key=%s, value=%s\n", k, v)
+			err := json.Unmarshal(v, &artist)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Printf("key=%d, value=%s\n", byte_to_int64(k), artist.Name)
 		}
 
 		return nil
@@ -55,4 +62,14 @@ func openDB_ReadOnly() (*bolt.DB, error) {
 	}
 
 	return db, err
+}
+
+func byte_to_int64(data []byte) int64 {
+	buf := bytes.NewReader(data)
+	value, err := binary.ReadVarint(buf)
+	if err != nil {
+		log.Println("Error loading key val")
+	}
+	return value
+
 }

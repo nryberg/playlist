@@ -59,13 +59,18 @@ func main() {
 	buildabucket(db, "artists")
 	buildabucket(db, "artist_name_id")
 
-	data, err := FetchTracks(db, "tracks", 1000)
+	data, err := FetchAllTracks(db, "stations")
+	log.Println("Length: ", len(data))
 	var artist Artist
+
+	data_count := 0
+	artist_count := 0
 	for _, datum := range data {
+		data_count += 1
 		for _, track := range datum.Tracks {
 			err := db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte("artists"))
-
+				artist_count += 1
 				// TODO: check and see if you've already got this artist -
 				artist.ArtistID = track.ArtistID
 				artist.Name = track.Artist
@@ -85,6 +90,8 @@ func main() {
 			}
 		}
 	}
+	log.Println("Processed data chunks: ", data_count)
+	log.Println("Processed artist entries: ", artist_count)
 
 }
 
@@ -130,14 +137,45 @@ func FetchTracks(db *bolt.DB, bucket_name string, limit int) ([]Data, error) {
 		k, v := c.First()
 		for i := 0; i <= limit; i++ {
 			//for k, v := c.First(); k != nil; k, v = c.Next() {
-			err := json.Unmarshal(v, &datum)
-			if err != nil {
-				log.Fatal(err)
+			if k != nil {
+				err := json.Unmarshal(v, &datum)
+				if err != nil {
+					log.Fatal(err)
+				}
+				key := string(k[:])
+				datum.Timestamp = key
+				data = append(data, datum)
 			}
-			key := string(k[:])
-			datum.Timestamp = key
-			data = append(data, datum)
+			k, v = c.Next()
+		}
 
+		return nil
+	})
+
+	log.Println(datum.Timestamp, datum.StationID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data, err
+}
+
+func FetchAllTracks(db *bolt.DB, bucket_name string) ([]Data, error) {
+	var data []Data
+	var datum Data
+	err := db.View(func(tx *bolt.Tx) error {
+
+		b := tx.Bucket([]byte("tracks"))
+		c := b.Cursor()
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			if k != nil {
+				err := json.Unmarshal(v, &datum)
+				if err != nil {
+					log.Fatal(err)
+				}
+				key := string(k[:])
+				datum.Timestamp = key
+				data = append(data, datum)
+			}
 		}
 
 		return nil

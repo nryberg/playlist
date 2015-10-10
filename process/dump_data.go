@@ -37,7 +37,7 @@ func main() {
 		log.Fatal("Failure Opening database: ", err)
 	}
 	defer db.Close()
-	limited := 10
+	limited := 100
 	var data Data
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("tracks"))
@@ -47,7 +47,8 @@ func main() {
 			if k != nil {
 				_ = json.Unmarshal(v, &data)
 				// stations = append(stations, station)
-				fmt.Printf("key=%s, value=%s\n", k, v)
+				//fmt.Printf("key=%s, value=%s\n", k, v)
+				fmt.Printf("%d : key=%s\n", i, k)
 				k, v = c.Next()
 			}
 		}
