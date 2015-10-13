@@ -7,9 +7,7 @@ import (
 	"github.com/boltdb/bolt"
 	"log"
 	"os"
-	//"io"
-	//"encoding/csv"
-	//"io/ioutil"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -38,47 +36,41 @@ type Entry struct {
 	SongID    int64 `json:"songID"`
 }
 
+type Entries []Entry
+
 func main() {
-	build_test_bed(5)
+	build_test_bed(1000)
 	dump_test_bed()
 }
 
 func dump_test_bed() {
 	db, err := openDB_ReadOnly()
+
 	if err != nil {
 		log.Fatal("Failure Opening database: ", err)
 	}
 	defer db.Close()
-	// var data Data
 	var entry Entry
+	var entries Entries
 	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("test"))
 		c := b.Cursor()
-		i := 0
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			if k != nil {
 				_ = json.Unmarshal(v, &entry)
-				fmt.Printf("%d,%d,%d,%d,%d\n", i, entry.TimeID,
-					entry.StationID, entry.ArtistID, entry.SongID)
-				/*
-					timed, _ := time.Parse("2006-01-02T15:04:05-07:00", string(k[:]))
-					time_number = timed.Unix()
-					for _, track := range data.Tracks {
-						//fmt.Printf("%d,%s,%s,%d,%d,%q,%s,%d\n", i, k, track.Artist, track.ArtistID, track.SongID, track.Title, data.StationID, time_number)
-						//	fmt.Printf("%d,%s,%s,%d,%d,%q,%s,%d\n",
-						//		i, k, track.Artist, track.ArtistID, track.SongID,
-						//			track.Title, data.StationID, time_number)
-						fmt.Printf("%d,%s,%s,%d,%s\n",
-							i, k, track.Artist, time_number, timed)
-					}
-				*/
-				i += 1
-
+				entries = append(entries, entry)
 			}
 		}
 		return nil
 	})
+	sort.Sort(entries)
+	for i := range entries {
+		entry = entries[i]
+		fmt.Printf("%d,%d,%d,%d,%d\n", i, entry.TimeID,
+			entry.StationID, entry.ArtistID, entry.SongID)
+		i += 1
+	}
 
 }
 
@@ -174,4 +166,16 @@ func openDB_ReadWrite() (*bolt.DB, error) {
 	}
 
 	return db, err
+}
+
+func (slice Entries) Len() int {
+	return len(slice)
+}
+
+func (slice Entries) Less(i, j int) bool {
+	return slice[i].TimeID < slice[j].TimeID
+}
+
+func (slice Entries) Swap(i, j int) {
+	slice[i], slice[j] = slice[j], slice[i]
 }
