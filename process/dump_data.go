@@ -11,6 +11,7 @@ import (
 	//"encoding/csv"
 	//"io/ioutil"
 	//"strconv"
+	"time"
 )
 
 type Data struct {
@@ -31,13 +32,45 @@ type Track struct {
 }
 
 func main() {
+	build_test_bed(10)
+	dump_test_bed()
+}
 
+func dump_test_bed() {
 	db, err := openDB_ReadOnly()
 	if err != nil {
 		log.Fatal("Failure Opening database: ", err)
 	}
 	defer db.Close()
-	limited := 100
+	var data Data
+	fmt.Println("Line, Time, Artist, ArtistID, SongID, Title, Station, TimeUnix")
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("test"))
+		c := b.Cursor()
+		i := 0
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			if k != nil {
+				_ = json.Unmarshal(v, &data)
+				timed, _ := time.Parse(time.RFC3339, data.Timestamp)
+				time_number := timed.Unix()
+				for _, track := range data.Tracks {
+					fmt.Printf("%d,%s,%s,%d,%d,%q,%s,%d\n", i, k, track.Artist, track.ArtistID, track.SongID, track.Title, data.StationID, time_number)
+				}
+				i += 1
+			}
+		}
+		return nil
+	})
+
+}
+
+func build_test_bed(limited int) {
+	var entries map[string][]byte
+	entries = make(map[string][]byte)
+	db, err := openDB_ReadOnly()
+	if err != nil {
+		log.Fatal("Failure Opening database: ", err)
+	}
 	var data Data
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("tracks"))
@@ -46,17 +79,32 @@ func main() {
 		for i := 0; i < limited; i++ {
 			if k != nil {
 				_ = json.Unmarshal(v, &data)
-				// stations = append(stations, station)
-				//fmt.Printf("key=%s, value=%s\n", k, v)
-				fmt.Printf("%d : key=%s\n", i, k)
+				if err != nil {
+					log.Fatal("Failure : ", err)
+				}
+				ks := string(k[:])
+				entries[ks] = v
 				k, v = c.Next()
 			}
 		}
-		/*
-			for k, v := c.First(); k != nil; k, v = c.Next() {
-				fmt.Printf("key=%s, value=%s\n", k, v)
+		return nil
+	})
+	db.Close()
+
+	db, err = openDB_ReadWrite()
+	defer db.Close()
+	err = db.Update(func(tx *bolt.Tx) error {
+		_ = tx.DeleteBucket([]byte("test"))
+		b, err := tx.CreateBucketIfNotExists([]byte("test"))
+		if err != nil {
+			log.Fatal("Failure : ", err)
+		}
+		for k := range entries {
+			err = b.Put([]byte(k), entries[k])
+			if err != nil {
+				log.Println("nope no can do: ", err)
 			}
-		*/
+		}
 		return nil
 	})
 
@@ -72,6 +120,16 @@ func int64_to_byte(number int64) []byte {
 func openDB_ReadOnly() (*bolt.DB, error) {
 	databasePath := os.Getenv("TRACKSDB")
 	db, err := bolt.Open(databasePath, 0600, &bolt.Options{ReadOnly: true})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db, err
+}
+
+func openDB_ReadWrite() (*bolt.DB, error) {
+	databasePath := os.Getenv("TRACKSDB")
+	db, err := bolt.Open(databasePath, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
