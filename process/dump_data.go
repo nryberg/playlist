@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -30,16 +31,17 @@ type Track struct {
 }
 
 type Entry struct {
-	TimeID    int64 `json:"timeID"`
-	StationID int64 `json:"stationID"`
-	ArtistID  int64 `json:"artistID"`
-	SongID    int64 `json:"songID"`
+	EntryID   uint64 `json:"entryID"`
+	TimeID    int64  `json:"timeID"`
+	StationID int64  `json:"stationID"`
+	ArtistID  int64  `json:"artistID"`
+	SongID    int64  `json:"songID"`
 }
 
 type Entries []Entry
 
 func main() {
-	build_test_bed(1000)
+	build_test_bed(100)
 	dump_test_bed()
 }
 
@@ -50,6 +52,7 @@ func dump_test_bed() {
 		log.Fatal("Failure Opening database: ", err)
 	}
 	defer db.Close()
+
 	var entry Entry
 	var entries Entries
 	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
@@ -65,11 +68,11 @@ func dump_test_bed() {
 		return nil
 	})
 	sort.Sort(entries)
-	for i := range entries {
-		entry = entries[i]
-		fmt.Printf("%d,%d,%d,%d,%d\n", i, entry.TimeID,
+
+	for k, _ := range entries {
+		entry = entries[k]
+		fmt.Printf("%d,%d,%d,%d,%d\n", k, entry.TimeID,
 			entry.StationID, entry.ArtistID, entry.SongID)
-		i += 1
 	}
 
 }
@@ -116,13 +119,14 @@ func build_test_bed(limited int) {
 			timed, _ := time.Parse("2006-01-02T15:04:05-07:00", data.Timestamp)
 			for _, track := range data.Tracks {
 
+				nextkey, _ := b.NextSequence()
+				entry.EntryID = nextkey
 				entry.TimeID = timed.Unix()
 				entry.StationID, err = strconv.ParseInt(data.StationID, 10, 64)
 				entry.ArtistID = track.ArtistID
 				entry.SongID = track.SongID
 
 				enc, err := json.Marshal(entry)
-				nextkey, _ := b.NextSequence()
 				err = b.Put(uint64_to_byte(nextkey), enc)
 				if err != nil {
 					log.Println("nope no can do: ", err)
@@ -146,6 +150,18 @@ func uint64_to_byte(number uint64) []byte {
 	_ = binary.PutUvarint(buf, number)
 	return buf
 
+}
+
+func byte_to_uint64(val []byte) uint64 {
+	buf := bytes.NewBuffer(val)
+	value, _ := binary.ReadUvarint(buf)
+	return value
+}
+
+func byte_to_int64(val []byte) int64 {
+	buf := bytes.NewBuffer(val)
+	value, _ := binary.ReadVarint(buf)
+	return value
 }
 
 func openDB_ReadOnly() (*bolt.DB, error) {
@@ -173,7 +189,7 @@ func (slice Entries) Len() int {
 }
 
 func (slice Entries) Less(i, j int) bool {
-	return slice[i].TimeID < slice[j].TimeID
+	return slice[i].EntryID < slice[j].EntryID
 }
 
 func (slice Entries) Swap(i, j int) {
