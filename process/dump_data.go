@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
-	"fmt"
+	_ "fmt"
 	"github.com/boltdb/bolt"
 	"log"
 	"os"
@@ -55,7 +55,8 @@ func dump_test_bed() {
 
 	var entry Entry
 	var entries Entries
-	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
+
+	// Unload the entries
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("test"))
 		c := b.Cursor()
@@ -67,12 +68,32 @@ func dump_test_bed() {
 		}
 		return nil
 	})
+
+	// This is where the magic happens
+	stationEntry := make(map[int64]Entry) // hangs on to the first entry for a station block
+	var lastStationID int64               // hangs on the last know Station ID to trip on a station block change
+	lastStationID = 0
+
 	sort.Sort(entries)
 
-	for _, entry := range entries {
+	//	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
+	for i, entry := range entries {
 		// entry = entries[k]
-		fmt.Printf("%d,%d,%d,%d,%d\n", entry.EntryID, entry.TimeID,
-			entry.StationID, entry.ArtistID, entry.SongID)
+		/*
+			fmt.Printf("%d,%d,%d,%d,%d\n", entry.EntryID, entry.TimeID,
+				entry.StationID, entry.ArtistID, entry.SongID)
+		*/
+		if lastStationID == entry.StationID { // working the same station block
+			log.Println("Same Station: ", entry.SongID)
+			if stationEntry[lastStationID].SongID == entry.SongID { // then we're repeating
+				log.Println("Repeater: ", entry.SongID)
+			}
+		}
+		if lastStationID != entry.StationID { // change in station block
+			log.Println("Change in station block", i)
+			lastStationID = entry.StationID
+			stationEntry[entry.StationID] = entry
+		}
 	}
 
 }
