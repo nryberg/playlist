@@ -69,9 +69,9 @@ func dump_test_bed() {
 	})
 	sort.Sort(entries)
 
-	for k, _ := range entries {
-		entry = entries[k]
-		fmt.Printf("%d,%d,%d,%d,%d\n", k, entry.TimeID,
+	for _, entry := range entries {
+		// entry = entries[k]
+		fmt.Printf("%d,%d,%d,%d,%d\n", entry.EntryID, entry.TimeID,
 			entry.StationID, entry.ArtistID, entry.SongID)
 	}
 
