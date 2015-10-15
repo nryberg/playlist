@@ -58,7 +58,7 @@ func dump_test_bed() {
 	var entries Entries
 
 	// Unload the entries
-	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
+	fmt.Println("Line, TrackCounter, TimeID, StationID, ArtistID, SongID")
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("test"))
 		c := b.Cursor()

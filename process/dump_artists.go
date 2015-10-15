@@ -28,6 +28,7 @@ func main() {
 	}
 	defer db.Close()
 	var artist Artist
+	fmt.Printf("ArtistID, ArtistName\n")
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("artists"))
 		stats := b.Stats()
@@ -39,7 +40,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf("key=%d, value=%s\n", byte_to_int64(k), artist.Name)
+			fmt.Printf("%d,%q\n", byte_to_int64(k), artist.Name)
 		}
 
 		return nil
