@@ -137,6 +137,14 @@ func build_test_bed(limited int) {
 	})
 	db.Close()
 
+	// Walking the dogs
+
+	stationEntry := make(map[int64]Entry) // hangs on to the first entry for a station block
+	var lastStationID int64               // hangs on the last know Station ID to trip on a station block change
+	var lastEntry Entry
+	lastStationID = 0
+	var isNewTracks bool
+
 	db, err = openDB_ReadWrite()
 	defer db.Close()
 	var entry Entry
@@ -147,11 +155,18 @@ func build_test_bed(limited int) {
 			log.Fatal("Failure : ", err)
 		}
 
-		//TODO Change terminology since the track becomes entries eventually
 		for k := range chunks {
 
 			_ = json.Unmarshal(chunks[k], &data)
 			timed, _ := time.Parse("2006-01-02T15:04:05-07:00", data.Timestamp)
+
+			lastStationID = data.StationID
+			lastEntry = stationEntry[data.StationID]
+			stationEntry[entry.StationID] = entry
+
+			// TODO: Rotate on the correct entry ^^^
+
+			isNewTracks = true
 			for _, track := range data.Tracks {
 				if track.SongID != 0 {
 					nextkey, _ := b.NextSequence()
@@ -161,6 +176,10 @@ func build_test_bed(limited int) {
 					entry.ArtistID = track.ArtistID
 					entry.SongID = track.SongID
 
+					if lastEntry.SongID == entry.SongID { // then we're repeating
+						isNewTracks = false
+						// log.Println("Repeater: ", entry.SongID, isNewTracks)
+					} // is repeated song
 					enc, err := json.Marshal(entry)
 					err = b.Put(uint64_to_byte(nextkey), enc)
 					if err != nil {
