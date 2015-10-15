@@ -84,7 +84,8 @@ func dump_test_bed() {
 	var isNewTracks bool
 	isNewTracks = true
 	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
-	for _, entry := range entries {
+	for i, _ := range entries {
+		entry := entries[i]
 		if lastStationID == entry.StationID { // working the same station block
 			// log.Println("Same : ", entry.SongID, isNewTracks)
 			if lastEntry.SongID == entry.SongID { // then we're repeating
@@ -101,8 +102,8 @@ func dump_test_bed() {
 		} // is new station block
 		if isNewTracks == true {
 
-			fmt.Printf("%d,%d,%d,%d,%d\n", entry.EntryID, entry.TimeID,
-				entry.StationID, entry.ArtistID, entry.SongID)
+			fmt.Printf("%d,%d,%d,%d,%d,%t\n", entry.EntryID, entry.TimeID,
+				entry.StationID, entry.ArtistID, entry.SongID, isNewTracks)
 		} // print if isNewTrack!
 	} // iterate entries
 
