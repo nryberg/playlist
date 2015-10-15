@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
-	_ "fmt"
+	"fmt"
 	"github.com/boltdb/bolt"
 	"log"
 	"os"
@@ -58,6 +58,7 @@ func dump_test_bed() {
 	var entries Entries
 
 	// Unload the entries
+	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("test"))
 		c := b.Cursor()
@@ -69,44 +70,11 @@ func dump_test_bed() {
 		}
 		return nil
 	})
-	/*
-		fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
-		fmt.Printf("%d,%d,%d,%d,%d,%t\n", entry.EntryID, entry.TimeID,
-			entry.StationID, entry.ArtistID, entry.SongID, isNewTracks)
-	*/
-	//TODO Move the dup'ed track info testing down to the pull func
-	//			This is after the fact and should be done earlier.  Will
-	// 			remove the need to play games with slices
-	//
-	// This is where the magic happens
-	stationEntry := make(map[int64]Entry) // hangs on to the first entry for a station block
-	var lastStationID int64               // hangs on the last know Station ID to trip on a station block change
-	var lastEntry Entry
-	lastStationID = 0
-
 	sort.Sort(entries)
-	var isNewTracks bool
-	isNewTracks = true
-	for i, _ := range entries {
-		entry := entries[i]
-		if lastStationID == entry.StationID { // working the same station block
-			// log.Println("Same : ", entry.SongID, isNewTracks)
-			if lastEntry.SongID == entry.SongID { // then we're repeating
-				isNewTracks = false
-				// log.Println("Repeater: ", entry.SongID, isNewTracks)
-			} // is repeated song
-		} // is same station block
-		if lastStationID != entry.StationID { // change in station block
-			// log.Println("New  : ", i, lastStationID, entry.StationID, isNewTracks)
-			lastStationID = entry.StationID
-			lastEntry = stationEntry[entry.StationID]
-			stationEntry[entry.StationID] = entry
-			isNewTracks = true
-		} // is new station block
-		if isNewTracks == true {
-
-		} // print if isNewTrack!
-	} // iterate entries
+	for i, entry := range entries {
+		fmt.Printf("%d,%d,%d,%d,%d,%d\n", i, entry.EntryID, entry.TimeID,
+			entry.StationID, entry.ArtistID, entry.SongID)
+	}
 
 } // end dump_test_bed
 
@@ -160,32 +128,37 @@ func build_test_bed(limited int) {
 			_ = json.Unmarshal(chunks[k], &data)
 			timed, _ := time.Parse("2006-01-02T15:04:05-07:00", data.Timestamp)
 
-			lastStationID = data.StationID
-			lastEntry = stationEntry[data.StationID]
-			stationEntry[entry.StationID] = entry
-
-			// TODO: Rotate on the correct entry ^^^
+			lastStationID, _ = strconv.ParseInt(data.StationID, 10, 64)
+			currentStationID, _ := strconv.ParseInt(data.StationID, 10, 64)
 
 			isNewTracks = true
+			i := 0
 			for _, track := range data.Tracks {
 				if track.SongID != 0 {
 					nextkey, _ := b.NextSequence()
 					entry.EntryID = nextkey
 					entry.TimeID = timed.Unix()
-					entry.StationID, err = strconv.ParseInt(data.StationID, 10, 64)
+					entry.StationID = currentStationID
 					entry.ArtistID = track.ArtistID
 					entry.SongID = track.SongID
+					if i == 0 {
+						lastEntry = stationEntry[currentStationID]
+						stationEntry[entry.StationID] = entry
+					}
+					if lastEntry.SongID != entry.SongID { // then it's still a new song
+						isNewTracks = true // 									and we should bop it into the db
+						enc, err := json.Marshal(entry)
+						err = b.Put(uint64_to_byte(nextkey), enc)
+						if err != nil {
+							log.Println("nope no can do: ", err)
+						} // err trap
+					} // is NOT repeated song
 
 					if lastEntry.SongID == entry.SongID { // then we're repeating
 						isNewTracks = false
-						// log.Println("Repeater: ", entry.SongID, isNewTracks)
 					} // is repeated song
-					enc, err := json.Marshal(entry)
-					err = b.Put(uint64_to_byte(nextkey), enc)
-					if err != nil {
-						log.Println("nope no can do: ", err)
-					} // err trap
 				} // SongID is not zero, run it
+				i += 1
 			} // iterate tracks in data chunk
 		} // iterate data chunk entries
 		return nil
