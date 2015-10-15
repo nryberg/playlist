@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
-	"fmt"
+	_ "fmt"
 	"github.com/boltdb/bolt"
 	"log"
 	"os"
@@ -69,7 +69,11 @@ func dump_test_bed() {
 		}
 		return nil
 	})
-
+	/*
+		fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
+		fmt.Printf("%d,%d,%d,%d,%d,%t\n", entry.EntryID, entry.TimeID,
+			entry.StationID, entry.ArtistID, entry.SongID, isNewTracks)
+	*/
 	//TODO Move the dup'ed track info testing down to the pull func
 	//			This is after the fact and should be done earlier.  Will
 	// 			remove the need to play games with slices
@@ -83,7 +87,6 @@ func dump_test_bed() {
 	sort.Sort(entries)
 	var isNewTracks bool
 	isNewTracks = true
-	fmt.Println("Line, TimeID, StationID, ArtistID, SongID")
 	for i, _ := range entries {
 		entry := entries[i]
 		if lastStationID == entry.StationID { // working the same station block
@@ -102,16 +105,14 @@ func dump_test_bed() {
 		} // is new station block
 		if isNewTracks == true {
 
-			fmt.Printf("%d,%d,%d,%d,%d,%t\n", entry.EntryID, entry.TimeID,
-				entry.StationID, entry.ArtistID, entry.SongID, isNewTracks)
 		} // print if isNewTrack!
 	} // iterate entries
 
 } // end dump_test_bed
 
 func build_test_bed(limited int) {
-	var entries map[string][]byte
-	entries = make(map[string][]byte)
+	var chunks map[string][]byte
+	chunks = make(map[string][]byte)
 	db, err := openDB_ReadOnly()
 	if err != nil {
 		log.Fatal("Failure Opening database: ", err)
@@ -128,7 +129,7 @@ func build_test_bed(limited int) {
 					log.Fatal("Failure : ", err)
 				}
 				ks := string(k[:])
-				entries[ks] = v
+				chunks[ks] = v
 				k, v = c.Next()
 			}
 		}
@@ -147,9 +148,9 @@ func build_test_bed(limited int) {
 		}
 
 		//TODO Change terminology since the track becomes entries eventually
-		for k := range entries {
+		for k := range chunks {
 
-			_ = json.Unmarshal(entries[k], &data)
+			_ = json.Unmarshal(chunks[k], &data)
 			timed, _ := time.Parse("2006-01-02T15:04:05-07:00", data.Timestamp)
 			for _, track := range data.Tracks {
 				if track.SongID != 0 {
