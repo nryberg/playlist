@@ -42,7 +42,7 @@ type Entry struct {
 type Entries []Entry
 
 func main() {
-	build_test_bed(100)
+	build_test_bed(10000)
 	dump_test_bed()
 }
 

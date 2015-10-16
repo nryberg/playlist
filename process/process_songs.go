@@ -66,7 +66,7 @@ func main() {
 
 	buildabucket(db, "songs")
 
-	data, err := FetchTracks(db, "stations", 100)
+	data, err := FetchTracks(db, "stations", 100000)
 	log.Println("Length: ", len(data))
 	var song Song
 
@@ -138,7 +138,7 @@ func FetchTracks(db *bolt.DB, bucket_name string, limit int) ([]Data, error) {
 	var data []Data
 	var datum Data
 	err := db.View(func(tx *bolt.Tx) error {
-
+		log.Println("Running %d tracks", limit)
 		b := tx.Bucket([]byte("tracks"))
 		c := b.Cursor()
 		k, v := c.First()

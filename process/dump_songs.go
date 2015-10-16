@@ -62,6 +62,7 @@ func openDB_ReadOnly() (*bolt.DB, error) {
 	db, err := bolt.Open(databasePath, 0600, &bolt.Options{ReadOnly: true})
 	if err != nil {
 		log.Fatal(err)
+		log.Fatal("Database Path: ", databasePath)
 	}
 
 	return db, err
