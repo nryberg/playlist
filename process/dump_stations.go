@@ -29,7 +29,7 @@ func main() {
 	}
 	defer db.Close()
 	var station Station
-	fmt.Printf("StationID, StationName\n")
+	fmt.Printf("StationID, StationName, Frequency\n")
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("stations"))
 		stats := b.Stats()
@@ -41,7 +41,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Printf("%d,%q\n", byte_to_int64(k), station.Location)
+			fmt.Printf("%d,%q,%s\n", byte_to_int64(k), station.Location, station.Freq)
 		}
 
 		return nil
