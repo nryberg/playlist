@@ -41,12 +41,27 @@ type Entry struct {
 
 type Entries []Entry
 
+type SongIDs map[int64][]bool
+
 func main() {
 	build_test_bed(10000)
 	dump_test_bed()
 }
 
 func dump_test_bed() {
+
+	// TODO Functional - iterate on a block by block basis
+	// Retain the last set of SongID's as a mapped slice
+	// if the test songid is in the last batch, fuggabout it
+	// Forget about trying to retain any sense of place in the slice.
+	// Which sort of makes sense given the drive to randomize slices.
+	// Overall assumption is that they won't repeat a song within an hour
+	// which is pretty generous.
+	// If you know from position in the dump that the song was played earlier
+	// and the current song was later, then maybe you'd get away with
+	// testing for sub-hour results.  Not really interested in hammering
+	// the source with four hits per minute.
+
 	db, err := openDB_ReadOnly()
 
 	if err != nil {
@@ -80,12 +95,14 @@ func dump_test_bed() {
 
 func build_test_bed(limited int) {
 	var chunks map[string][]byte
+
 	chunks = make(map[string][]byte)
 	db, err := openDB_ReadOnly()
 	if err != nil {
 		log.Fatal("Failure Opening database: ", err)
 	}
 	var data Data
+
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("tracks"))
 		c := b.Cursor()
@@ -96,22 +113,19 @@ func build_test_bed(limited int) {
 				if err != nil {
 					log.Fatal("Failure : ", err)
 				}
+				//fmt.Println(data.StationID)
 				ks := string(k[:])
 				chunks[ks] = v
 				k, v = c.Next()
+
 			}
 		}
 		return nil
 	})
 	db.Close()
 
-	// Walking the dogs
-
-	stationEntry := make(map[int64]Entry) // hangs on to the first entry for a station block
-	var lastStationID int64               // hangs on the last know Station ID to trip on a station block change
-	var lastEntry Entry
-	lastStationID = 0
-	var isNewTracks bool
+	var stationHistory map[string]map[int64]bool
+	stationHistory = make(map[string]map[int64]bool)
 
 	db, err = openDB_ReadWrite()
 	defer db.Close()
@@ -127,38 +141,55 @@ func build_test_bed(limited int) {
 
 			_ = json.Unmarshal(chunks[k], &data)
 			timed, _ := time.Parse("2006-01-02T15:04:05-07:00", data.Timestamp)
+			stationID := data.StationID
+			currentStationID, _ := strconv.ParseInt(stationID, 10, 64)
 
-			lastStationID, _ = strconv.ParseInt(data.StationID, 10, 64)
-			currentStationID, _ := strconv.ParseInt(data.StationID, 10, 64)
+			_, ok := stationHistory[stationID] // test for existing station history, drop unecessary return
+			if ok {                            // lets check out what's in the books for this station
+				for _, track := range data.Tracks {
+					songID := track.SongID
 
-			isNewTracks = true
-			i := 0
-			for _, track := range data.Tracks {
-				if track.SongID != 0 {
+					_, ok := stationHistory[stationID][songID] // don't really care about the value
+					if ok {                                    // song already exists and we can drop it
+						delete(stationHistory[stationID], songID) // if this doesn't work, we can use this as a history for songs
+					} else { // We have a winner! The song doesn't exist, and we can rock n' roll
+						stationHistory[stationID][songID] = true
+						nextkey, _ := b.NextSequence()
+						entry.EntryID = nextkey
+						entry.TimeID = timed.Unix()
+						entry.StationID = currentStationID
+						entry.ArtistID = track.ArtistID
+						entry.SongID = track.SongID
+						enc, err := json.Marshal(entry)
+						if songID != 0 {
+							err = b.Put(uint64_to_byte(nextkey), enc)
+							if err != nil {
+								log.Println("nope no can do: ", err)
+							} // err trap
+						} // don't store zero track id's
+					} // end pushing new song out
+				} // iterate tracks
+			} else { // never really tracked this station before
+				// TODO DRY this up!
+				stationHistory[stationID] = make(map[int64]bool)
+				for _, track := range data.Tracks {
+					songID := track.SongID
+					stationHistory[stationID][songID] = true
 					nextkey, _ := b.NextSequence()
 					entry.EntryID = nextkey
 					entry.TimeID = timed.Unix()
 					entry.StationID = currentStationID
 					entry.ArtistID = track.ArtistID
 					entry.SongID = track.SongID
-					if i == 0 {
-						lastEntry = stationEntry[currentStationID]
-						stationEntry[entry.StationID] = entry
-					}
-					if lastEntry.SongID != entry.SongID { // then it's still a new song
-						isNewTracks = true // 									and we should bop it into the db
-						enc, err := json.Marshal(entry)
+					enc, err := json.Marshal(entry)
+					if songID != 0 {
 						err = b.Put(uint64_to_byte(nextkey), enc)
 						if err != nil {
 							log.Println("nope no can do: ", err)
 						} // err trap
-					} // is NOT repeated song
+					} // don't store zero tracks
+				} // iterate tracks
 
-					if lastEntry.SongID == entry.SongID { // then we're repeating
-						isNewTracks = false
-					} // is repeated song
-				} // SongID is not zero, run it
-				i += 1
 			} // iterate tracks in data chunk
 		} // iterate data chunk entries
 		return nil
