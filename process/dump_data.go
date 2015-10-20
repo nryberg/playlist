@@ -44,7 +44,7 @@ type Entries []Entry
 type SongIDs map[int64][]bool
 
 func main() {
-	build_test_bed(10000)
+	build_test_bed(100000000)
 	dump_test_bed()
 }
 
