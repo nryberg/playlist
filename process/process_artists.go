@@ -46,7 +46,11 @@ type Station struct {
 
 func main() {
 
+	// Test
 	databasePath := os.Getenv("TRACKSDB")
+
+	// Prod
+	databasePath = os.Getenv("FETCHDB")
 
 	log.Println("Opening database:", databasePath)
 	db, err := bolt.Open(databasePath, 0600, nil)
