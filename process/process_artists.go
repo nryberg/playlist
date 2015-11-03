@@ -50,7 +50,7 @@ func main() {
 	databasePath := os.Getenv("TRACKSDB")
 
 	// Prod
-	databasePath = os.Getenv("FETCHDB")
+	//databasePath = os.Getenv("FETCHDB")
 
 	log.Println("Opening database:", databasePath)
 	db, err := bolt.Open(databasePath, 0600, nil)
