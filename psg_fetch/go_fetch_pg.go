@@ -48,9 +48,11 @@ func main() {
 	log.Println("StationList: ", stationlist)
 	log.Println("Loading stations")
 	stations := FetchStations(stationlist)
-	username := "nick" // for dev
+	username := os.Getenv("DBUSER_WRITE") // "nick" // for dev
+	log.Println("Username: ", username)
+	pass := os.Getenv("DBUSER_WRITE_PW") // "nick" // for dev
 	database := os.Getenv("PLAYLISTDB")
-	connection := fmt.Sprintf("user=%s dbname=%s sslmode=disable", username, database)
+	connection := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", username, pass, database)
 	//db, err := sql.Open("postgres", "user=pqgotest dbname=pqgotest sslmode=verify-full")
 	db, err := sql.Open("postgres", connection)
 	if err != nil {
