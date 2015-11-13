@@ -69,15 +69,15 @@ func main() {
 	log.Println("Opening database:", database)
 
 	log.Println("Fetching station 1")
-	data, err := FetchAStationNow(stations)
+	data, stationID, err := FetchAStationNow(stations)
 	if err != nil {
 		panic(err.Error())
 	}
 	stamp := time.Now().Format(time.RFC3339)
 
 	var lastInsertId int
-	err = db.QueryRow("INSERT INTO raw(rawtime,rawdata) VALUES($1,$2) returning rawid;",
-		stamp, data).Scan(&lastInsertId)
+	err = db.QueryRow("INSERT INTO raw(rawtime,stationID, rawdata) VALUES($1,$2,$3) returning rawid;",
+		stamp, stationID, data).Scan(&lastInsertId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -86,14 +86,15 @@ func main() {
 
 }
 
-func FetchAStationNow(stations []Station) (string, error) {
+func FetchAStationNow(stations []Station) (string, int64, error) {
 	now := time.Now()
 	station_number := TimeTwice(now)
 	station := stations[station_number]
 	log.Println("Fetching station: ", station.Location)
 	station_id := station.ID
 	data, err := FetchStationData(station_id)
-	return data, err
+	stationID_int, err := strconv.ParseInt(station_id, 10, 64)
+	return data, stationID_int, err
 
 }
 
