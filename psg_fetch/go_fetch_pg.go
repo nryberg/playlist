@@ -55,11 +55,11 @@ func main() {
 	app_status := os.Getenv("APP_STATUS")
 	var connection string
 	if app_status == "DEV" {
-		connection := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", username, pass, database)
+		connection = fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", username, pass, database)
 	} else {
-		connection := fmt.Sprintf("user=%s password=%s dbname=%s", username, pass, database)
+		connection = fmt.Sprintf("user=%s password=%s dbname=%s", username, pass, database)
 	}
-
+	log.Println("Connection: ", connection)
 	//db, err := sql.Open("postgres", "user=pqgotest dbname=pqgotest sslmode=verify-full")
 	db, err := sql.Open("postgres", connection)
 	if err != nil {
