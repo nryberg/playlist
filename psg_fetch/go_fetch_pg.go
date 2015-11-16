@@ -70,6 +70,7 @@ func main() {
 
 	log.Println("Fetching station 1")
 	data, stationID, err := FetchAStationNow(stations)
+	log.Println(data)
 	if err != nil {
 		panic(err.Error())
 	}
