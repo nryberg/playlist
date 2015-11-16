@@ -48,6 +48,32 @@ func main() {
 	log.Println("StationList: ", stationlist)
 	log.Println("Loading stations")
 	stations := FetchStations(stationlist)
+	log.Println("Fetching station 1")
+	data, stationID, err := FetchAStationNow(stations)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	lastID, err := PushData(data, stationID)
+
+	log.Println("Last rawID :", lastID)
+
+	log.Println("Waiting for next station in 30 secs")
+	time.Sleep(30 * time.Second)
+
+	log.Println("Fetching station 2")
+
+	data, stationID, err = FetchAStationNow(stations)
+	if err != nil {
+		panic(err.Error())
+	}
+	lastID, err = PushData(data, stationID)
+
+	log.Println("Last rawID :", lastID)
+}
+
+func PushData(data string, stationID int64) (int, error) {
+
 	username := os.Getenv("DBUSER_WRITE") // "nick" // for dev
 	log.Println("Username: ", username)
 	pass := os.Getenv("DBUSER_WRITE_PW") // "nick" // for dev
@@ -59,21 +85,13 @@ func main() {
 	} else {
 		connection = fmt.Sprintf("user=%s password=%s dbname=%s", username, pass, database)
 	}
-	log.Println("Connection: ", connection)
-	//db, err := sql.Open("postgres", "user=pqgotest dbname=pqgotest sslmode=verify-full")
+
+	log.Println("Opening database:", database)
 	db, err := sql.Open("postgres", connection)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Opening database:", database)
-
-	log.Println("Fetching station 1")
-	data, stationID, err := FetchAStationNow(stations)
-	log.Println(data)
-	if err != nil {
-		panic(err.Error())
-	}
 	stamp := time.Now().Format(time.RFC3339)
 
 	var lastInsertId int
@@ -83,8 +101,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	log.Println("Last rawID :", lastInsertId)
-
+	return lastInsertId, err
 }
 
 func FetchAStationNow(stations []Station) (string, int64, error) {
