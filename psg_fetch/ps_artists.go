@@ -42,13 +42,51 @@ type Station struct {
 	ID       string
 }
 
+type Artist struct {
+	Name     string
+	ArtistID int64
+	Plays    int64
+}
+
 func main() {
 
 	db, err := SetupDB()
-	db.Close
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var rawids []int
+
+	queryStmt, err := db.Prepare("SELECT rawid FROM raw")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rows, err := queryStmt.Query()
+	defer rows.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		var rawid int
+		if err := rows.Scan(&rawid); err != nil {
+			log.Fatal(err)
+		}
+		rawids = append(rawids, rawid)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Closing up")
+	db.Close()
+	log.Println("Row Count: ", len(rawids))
+
 }
 
-func SetupDB() (*sql.database, error) {
+func SetupDB() (*sql.DB, error) {
 	username := os.Getenv("DBUSER_WRITE") // "nick" // for dev
 	log.Println("Username: ", username)
 	pass := os.Getenv("DBUSER_WRITE_PW") // "nick" // for dev
