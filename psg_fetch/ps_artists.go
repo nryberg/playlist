@@ -69,7 +69,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var rawtexts []string
 	var data Data
 	for rows.Next() {
 		var rawtext string
@@ -83,11 +82,9 @@ func main() {
 
 		for _, track := range data.Tracks {
 
-			log.Println("Sample: ", track.Artist)
 			_, err = artistStmt.Exec(track.ArtistID, track.Artist)
 		}
 
-		rawtexts = append(rawtexts, rawtext)
 	}
 	err = rows.Err()
 	if err != nil {
@@ -96,7 +93,6 @@ func main() {
 
 	log.Println("Closing up")
 	db.Close()
-	log.Println("Row Count: ", len(rawtexts))
 
 }
 
