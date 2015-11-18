@@ -12,7 +12,7 @@ import (
 	// "net/http"
 	"os"
 	// "strconv"
-	// "time"
+	"time"
 
 	// "bufio"
 	//"github.com/boltdb/bolt"
@@ -55,12 +55,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	queryStmt, err := db.Prepare("SELECT rawdata FROM raw")
+	queryStmt, err := db.Prepare("SELECT rawtime, stationid, rawdata FROM raw")
 
 	artistStmt, err := db.Prepare("INSERT INTO artist(artistid, artistname) SELECT $1, $2 WHERE NOT EXISTS ( SELECT artistid FROM artist WHERE artistid=$1)")
 
+	songStmt, err := db.Prepare("INSERT INTO song(songid, songname) SELECT $1, $2 WHERE NOT EXISTS ( SELECT songid FROM song WHERE songid=$1)")
+
+	playStmt, err := db.Prepare("INSERT INTO play(time,artistid, songid, stationid) SELECT $1, $2, $3, $4")
+
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error prepping statments: ", err)
 	}
 
 	rows, err := queryStmt.Query()
@@ -72,17 +76,25 @@ func main() {
 	var data Data
 	for rows.Next() {
 		var rawtext string
-		if err := rows.Scan(&rawtext); err != nil {
-			log.Fatal(err)
+		var rawtime time.Time
+		var stationid int
+		if err := rows.Scan(&rawtime, &stationid, &rawtext); err != nil {
+			log.Fatal("Error unloading raw: ", err)
 		}
 		err = json.Unmarshal([]byte(rawtext), &data)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Error unmarshaling:", err)
 		}
 
 		for _, track := range data.Tracks {
 
 			_, err = artistStmt.Exec(track.ArtistID, track.Artist)
+			_, err = songStmt.Exec(track.SongID, track.Title)
+			// time, artist, song, station
+			_, err = playStmt.Exec(rawtime, track.ArtistID, track.SongID, stationid)
+			if err != nil {
+				log.Fatal("Error running SQL: ", err)
+			}
 		}
 
 	}
