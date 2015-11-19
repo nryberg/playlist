@@ -3,11 +3,12 @@ package main
 import (
 	"bufio"
 	"database/sql"
-	_ "encoding/csv"
+	// "encoding/csv"
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 	"os"
+	"strings"
 )
 
 type Station struct {
@@ -23,7 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	filename := "/Users/Nick/Develop/playlist/process/stations.csv"
+	filename := os.Getenv("STATIONS") // "nick" // for dev
 	stations, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -40,6 +41,25 @@ func main() {
 	}
 
 	log.Println("Line Count: ", len(lines))
+
+	deleteStmt, err := db.Prepare("DELETE FROM station")
+	_, err = deleteStmt.Exec()
+	if err != nil {
+		log.Fatal("Error running SQL: ", err)
+	}
+
+	inserStmt, err := db.Prepare("INSERT INTO station(stationid, stationfreq, stationstate, stationcity) SELECT $1, $2, $3, $4")
+
+	for _, station := range lines {
+		data := strings.Split(station, ",")
+		log.Println(data)
+
+		inserStmt.Exec(data[0], data[1], data[3][0:len(data[3])-1], data[2][1:len(data[2])])
+
+		if err != nil {
+			log.Fatal("Error running insert SQL: ", err)
+		}
+	}
 
 }
 
