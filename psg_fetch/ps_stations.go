@@ -52,9 +52,10 @@ func main() {
 
 	for _, station := range lines {
 		data := strings.Split(station, ",")
-		log.Println(data)
-
-		inserStmt.Exec(data[0], data[1], data[3][0:len(data[3])-1], data[2][1:len(data[2])])
+		city := strings.Trim(data[2], "\"")
+		state := strings.Trim(data[3], "\"")
+		log.Println("City, State: ", city, state)
+		inserStmt.Exec(data[4], data[1], state, city)
 
 		if err != nil {
 			log.Fatal("Error running insert SQL: ", err)
