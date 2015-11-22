@@ -118,7 +118,11 @@ func FetchAStationNow(stations []Station) (string, int64, error) {
 
 func FetchStationData(station_id string) (string, error) {
 	url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
-
+	/*
+		http://www.kiisfm.com/services/now_playing.html?streamId=
+		http://www.1065kissfm.com/services/getNowPlaying.php?streamid=6143&limit=10
+		http://www.kissfm.com/services/getNowPlaying.php?streamid=6143&limit=10
+	*/
 	res, err := http.Get(url)
 	if err != nil {
 		panic(err.Error())
