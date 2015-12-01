@@ -2,20 +2,12 @@ package main
 
 import (
 	"database/sql"
-	//"encoding/csv"
 	"encoding/json"
 	"fmt"
 	_ "github.com/lib/pq"
-	//"io"
-	// "io/ioutil"
 	"log"
-	// "net/http"
 	"os"
-	// "strconv"
 	"time"
-
-	// "bufio"
-	//"github.com/boltdb/bolt"
 )
 
 type Data struct {
