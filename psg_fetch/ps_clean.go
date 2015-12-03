@@ -15,30 +15,60 @@ func main() {
 		log.Fatal(err)
 	}
 
-	queryStmt, err := db.Prepare("SELECT time, stationid, artistid, songid FROM play WHERE stationid = $1 AND songid <> 0 ORDER BY time")
-
-	// queryStmt, err := db.Prepare("SELECT COUNT(*) FROM play WHERE stationid = $1")
-	if err != nil {
-		log.Fatal(err)
-	}
-	rows, err := queryStmt.Query("1469")
-	defer rows.Close()
+	queryTimes, err := db.Prepare("SELECT time FROM play WHERE stationid = $1 GROUP BY time ORDER BY time")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for rows.Next() {
-		var time time.Time
-		var stationid int
-		var artistid int
-		var songid int
-		if err := rows.Scan(&time, &stationid, &artistid, &songid); err != nil {
+	//rows, err := queryStmt.Query("1469")
+	timeRows, err := queryTimes.Query("1469")
+	defer timeRows.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var times []time.Time
+	var time time.Time
+	for timeRows.Next() {
+		if err := timeRows.Scan(&time); err != nil {
 			log.Fatal("Error unloading data: ", err)
 		}
-		log.Println("Data: ", time, stationid, artistid, songid)
+		times = append(times, time)
 	}
+	timeRows.Close()
+	queryText :=
+		`UPDATE play 
+			SET drop = TRUE
+		WHERE stationid = $1 
+			AND time = $2
+		  AND songid IN (
+				SELECT songid 
+				FROM play
+				WHERE stationid = $1
+				AND time = $3)`
+	log.Println("Query: ", queryText)
+	updateEntries, err := db.Prepare(queryText)
+	if err != nil {
+		log.Fatal(err)
+	} // err trap
+	for index, time := range times {
+		if index > 0 {
+			lastTime := times[index-1]
+			_, err := updateEntries.Exec("1469", time, lastTime)
+			if err != nil {
+				log.Fatal(err)
+			}
+			/*
+				rowCnt, err := res.RowsAffected()
+				if err != nil {
+					log.Fatal(err)
+				}
 
-}
+				log.Println("Rows affected : ", rowCnt)
+			*/
+		} // index > 0
+	} // iterate times
+	log.Println("Done updating rows")
+} // eof
 
 func SetupDB() (*sql.DB, error) {
 	username := os.Getenv("DBUSER_WRITE") // "nick" // for dev
