@@ -15,13 +15,84 @@ func main() {
 		log.Fatal(err)
 	}
 
+	stationids, err := fetchStationIDs(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	stationid := stationids[0]
+
+	log.Println("Fetching station: ", stationid)
+	times, err := fetchTimesForStation(db, stationid)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = updateStationPlays(db, stationid, times)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Done updating rows")
+} // eof
+
+func fetchStationIDs(db *sql.DB) ([]int, error) {
+	queryText :=
+		`SELECT stationid 
+		 FROM play
+		 GROUP BY stationid`
+	queryStations, err := db.Prepare(queryText)
+	stationRows, err := queryStations.Query()
+	defer stationRows.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var stationid int
+	var stationids []int
+	for stationRows.Next() {
+		if err := stationRows.Scan(&stationid); err != nil {
+			log.Fatal("Error unloading station data: ", err)
+		}
+		stationids = append(stationids, stationid)
+	}
+	stationRows.Close()
+	return stationids, err
+}
+func updateStationPlays(db *sql.DB, stationid int, times []time.Time) error {
+	queryText :=
+		`UPDATE play 
+			SET drop = TRUE
+		WHERE stationid = $1 
+			AND time = $2
+		  AND songid IN (
+				SELECT songid 
+				FROM play
+				WHERE stationid = $1
+				AND time = $3)`
+	updateEntries, err := db.Prepare(queryText)
+	if err != nil {
+		log.Fatal(err)
+	} // err trap
+	for index, time := range times {
+		if index > 0 {
+			lastTime := times[index-1]
+			_, err := updateEntries.Exec("1469", time, lastTime)
+			if err != nil {
+				log.Fatal(err)
+			}
+		} // index > 0
+	} // iterate times
+
+	return err
+}
+
+func fetchTimesForStation(db *sql.DB, stationid int) ([]time.Time, error) {
+
 	queryTimes, err := db.Prepare("SELECT time FROM play WHERE stationid = $1 GROUP BY time ORDER BY time")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	//rows, err := queryStmt.Query("1469")
-	timeRows, err := queryTimes.Query("1469")
+	timeRows, err := queryTimes.Query(stationid)
 	defer timeRows.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -35,40 +106,8 @@ func main() {
 		times = append(times, time)
 	}
 	timeRows.Close()
-	queryText :=
-		`UPDATE play 
-			SET drop = TRUE
-		WHERE stationid = $1 
-			AND time = $2
-		  AND songid IN (
-				SELECT songid 
-				FROM play
-				WHERE stationid = $1
-				AND time = $3)`
-	log.Println("Query: ", queryText)
-	updateEntries, err := db.Prepare(queryText)
-	if err != nil {
-		log.Fatal(err)
-	} // err trap
-	for index, time := range times {
-		if index > 0 {
-			lastTime := times[index-1]
-			_, err := updateEntries.Exec("1469", time, lastTime)
-			if err != nil {
-				log.Fatal(err)
-			}
-			/*
-				rowCnt, err := res.RowsAffected()
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				log.Println("Rows affected : ", rowCnt)
-			*/
-		} // index > 0
-	} // iterate times
-	log.Println("Done updating rows")
-} // eof
+	return times, err
+}
 
 func SetupDB() (*sql.DB, error) {
 	username := os.Getenv("DBUSER_WRITE") // "nick" // for dev
