@@ -19,18 +19,21 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	stationid := stationids[0]
 
-	log.Println("Fetching station: ", stationid)
-	times, err := fetchTimesForStation(db, stationid)
-	if err != nil {
-		log.Fatal(err)
-	}
+	for _, stationid := range stationids {
 
-	err = updateStationPlays(db, stationid, times)
-	if err != nil {
-		log.Fatal(err)
-	}
+		log.Println("Fetching station: ", stationid)
+		times, err := fetchTimesForStation(db, stationid)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = updateStationPlays(db, stationid, times)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	} // looping station ids
 	log.Println("Done updating rows")
 } // eof
 
