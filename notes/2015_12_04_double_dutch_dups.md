@@ -7,11 +7,11 @@ For some reason, the feed is giving me junk repeats.   So the trick is to flag d
 
 
 vw_dups - identifies the songs that are doubled up within the timeframe for the station
-
-`SELECT play."time",
-`    play.stationid,
-`    play.songid
-`   FROM play
-`  GROUP BY play."time", play.stationid, play.songid
-` HAVING count(*) > 1;
-
+```
+SELECT play."time",
+    play.stationid,
+    play.songid
+   FROM play
+  GROUP BY play."time", play.stationid, play.songid
+ HAVING count(*) > 1;
+```
