@@ -40,18 +40,32 @@ can lie.
 
 Let's take a look at what we've got:
 
+```
 SELECT playid, time, stationid, songid, drop FROM play WHERE playid IN (SELECT playid FROM vw_duped_playids) ORDER BY
 stationid, time, playid;
+```
 
-playid |        time         | stationid |  songid  | drop 
---------+---------------------+-----------+----------+------
-  17561 | 2015-11-16 22:37:02 |        61 | 35245009 | t
-  17566 | 2015-11-16 22:37:02 |        61 | 35245009 | t
-  21950 | 2015-11-17 02:07:01 |        61 | 34715937 | t
-  21959 | 2015-11-17 02:07:01 |        61 | 34715937 | t
-  22563 | 2015-11-17 02:37:02 |        61 | 34715937 | t
+| playid |        time         | stationid |  songid  | drop 
+| -------+---------------------+-----------+----------+------
+| 17561 | 2015-11-16 22:37:02 |        61 | 35245009 | t
+| 17566 | 2015-11-16 22:37:02 |        61 | 35245009 | t
+| 21950 | 2015-11-17 02:07:01 |        61 | 34715937 | t
+| 21959 | 2015-11-17 02:07:01 |        61 | 34715937 | t
+| 22563 | 2015-11-17 02:37:02 |        61 | 34715937 | t
 
 So go fetch the playid's for the blocks - second query, and then for each
 block, grab the minimum 
 
+``` 
+SELECT MIN(playid) FROM vw_duped_blocks GROUP BY time, stationid, songid ORDER BY stationid, time;
+```
+
+  min   
+--------
+  17561
+  21950
+  22563
+  23185
+  34418
+  99943
 and flip it to drop => FALSE
