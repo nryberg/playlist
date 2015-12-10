@@ -6,7 +6,6 @@ import (
 	_ "github.com/lib/pq"
 	"log"
 	"os"
-	"time"
 )
 
 func main() {
@@ -19,26 +18,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Done updating")
+	log.Println("Done updating, rows: ", affect)
 }
 
-func remove_Dups(db *sql.DB, string tablename, string column) (int, error) {
+func remove_Dups(db *sql.DB, tablename string, column string) (int64, error) {
 	queryText :=
-		`DELETE FROM $1 
+		`DELETE FROM %s 
 		WHERE id IN (SELECT id
 				FROM (SELECT id,
 									ROW_NUMBER() OVER 
-										(partition BY $2 ORDER BY id) AS rnum
-							FROM $1) t
+										(partition BY %s ORDER BY id) AS rnum
+							FROM %s) t
 				WHERE t.rnum > 1);`
 
+	statement := fmt.Sprintf(queryText, tablename, column, tablename)
 	log.Println("Removing dups from :", tablename)
-	queryUpdate, err := db.Prepare(queryText)
+	queryUpdate, err := db.Prepare(statement)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := db.Exec(tablename, column)
+	res, err := queryUpdate.Exec()
 	if err != nil {
 		log.Fatal(err)
 	}
