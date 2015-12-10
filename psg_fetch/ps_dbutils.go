@@ -26,6 +26,12 @@ func main() {
 	}
 	log.Println("Done updating, rows: ", affect)
 
+	affect, err = remove_Dups(db, "station", "stationid")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Done updating, rows: ", affect)
+
 }
 
 func remove_Dups(db *sql.DB, tablename string, column string) (int64, error) {
