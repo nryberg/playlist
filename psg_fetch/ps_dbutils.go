@@ -32,6 +32,75 @@ func main() {
 	}
 	log.Println("Done updating, rows: ", affect)
 
+	affect, err = flag_duplicate_songs(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Done flagging duplicates, rows: ", affect)
+
+	affect, err = fix_flag_first_duplicate_play(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Done fixing first duplicates, rows: ", affect)
+
+}
+
+func flag_duplicate_songs(db *sql.DB) (int64, error) {
+
+	queryText :=
+		`UPDATE play SET drop = TRUE WHERE playid in (SELECT playid from vw_duped_playids);`
+	log.Println("Removing duplicate plays")
+
+	queryUpdate, err := db.Prepare(queryText)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := queryUpdate.Exec()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	affect, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Duplicate plays: ", affect)
+
+	return affect, err
+
+}
+
+func fix_flag_first_duplicate_play(db *sql.DB) (int64, error) {
+	queryText :=
+		`UPDATE play SET drop = FALSE WHERE playid in 
+			(SELECT MIN(playid) 
+				FROM vw_duped_blocks 
+				GROUP BY time, stationid, songid 
+				ORDER BY stationid, time);`
+
+	log.Println("Fixing first duplicate plays")
+
+	queryUpdate, err := db.Prepare(queryText)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res, err := queryUpdate.Exec()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	affect, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Fixed first plays: ", affect)
+
+	return affect, err
 }
 
 func remove_Dups(db *sql.DB, tablename string, column string) (int64, error) {

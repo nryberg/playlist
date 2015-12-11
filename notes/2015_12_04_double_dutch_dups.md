@@ -68,4 +68,11 @@ SELECT MIN(playid) FROM vw_duped_blocks GROUP BY time, stationid, songid ORDER B
   23185
   34418
   99943
+
+Now set those drops to FALSE
+
+``` 
+UPDATE play SET drop = FALSE WHERE playid in (SELECT MIN(playid) FROM vw_duped_blocks GROUP BY time, stationid, songid ORDER BY stationid, time);
+```
+
 and flip it to drop => FALSE
