@@ -95,6 +95,7 @@ func PushData(data string, stationID int64) (int, error) {
 	stamp := time.Now().Format(time.RFC3339)
 
 	var lastInsertId int
+
 	err = db.QueryRow("INSERT INTO raw(rawtime,stationID, rawdata) VALUES($1,$2,$3) returning rawid;",
 		stamp, stationID, data).Scan(&lastInsertId)
 	if err != nil {
@@ -117,7 +118,9 @@ func FetchAStationNow(stations []Station) (string, int64, error) {
 }
 
 func FetchStationData(station_id string) (string, error) {
-	url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
+	// OLD URL  url := "http://www.kiisfm.com/services/now_playing.html?streamId=" + station_id + "&limit=12"
+	url := "http://www.kiisfm.com/iheartproxy/proxy?path=%2FliveMetaData%2FgetStations&params=stationId%3D" + station_id
+	log.Println(url)
 	/*
 		http://www.kiisfm.com/services/now_playing.html?streamId=
 		http://www.1065kissfm.com/services/getNowPlaying.php?streamid=6143&limit=10
